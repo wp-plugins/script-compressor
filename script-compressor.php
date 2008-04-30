@@ -1,0 +1,219 @@
+<?
+/*
+Plugin Name: Script Compressor
+Plugin URI: http://rp.exadge.com
+Description: This plugin compresses javascript files and css files.
+Version: 1.0
+Author: Regen
+Author URI: http://rp.exadge.com
+*/
+
+/*
+    Copyright (C) 2008 Regen
+    This program is licensed under the GNU GPL.
+*/
+
+class ScriptCompressor {
+	var $domain, $plugin_name, $plugin_path, $options;
+	
+	function ScriptCompressor() {
+		$this->domain = 'script-compressor';
+		$this->plugin_name = 'script-compressor';
+		$this->plugin_path = get_option('siteurl').'/wp-content/plugins/'.$this->plugin_name;
+		
+		load_plugin_textdomain($this->domain, 'wp-content/plugins/'.$this->plugin_name);
+		
+		add_action('admin_menu', array(&$this, 'regist_menu'));
+		register_deactivation_hook(__FILE__, array(&$this, 'deactive'));
+		
+		$this->get_sc_option();
+		
+		$this->set_hooks();
+	}
+	
+	function set_hooks() {
+		if (isset($this->options['sc_comp']['auto_js_comp']))
+			add_action('get_header', array(&$this, 'regist_header_comp'));
+		else
+			remove_action('get_header', array(&$this, 'regist_header_comp'));
+		
+		if (isset($this->options['sc_comp']['css_comp']))
+			add_filter('mod_rewrite_rules', array(&$this, 'regist_rewrite'));
+		else
+			remove_filter('mod_rewrite_rules', array(&$this, 'regist_rewrite'));
+	}
+	
+	function deactive() {
+		global $wp_rewrite;
+		
+		remove_action('get_header', array(&$this, 'regist_header_comp'));
+		remove_filter('mod_rewrite_rules', array(&$this, 'regist_rewrite'));
+		
+		$wp_rewrite->flush_rules();
+	}
+	
+	function get_sc_option() {
+		$this->options = (array)get_option('scriptcomp_option');
+	}
+	
+	function update_sc_option() {
+		update_option('scriptcomp_option', $this->options);
+	}
+	
+	function delete_sc_option() {
+		$this->options = array();
+		delete_option('scriptcomp_option');
+	}
+	
+	function comp_start() {
+		ob_start(array(&$this, 'do_compress'));
+	}
+	
+	function comp_end() {
+		ob_end_flush();
+	}
+	
+	function do_compress($header_data) {
+		$regex_js = '/<script\s.*src=(?:"|\')(.+?)(?:"|\').*>.*<\/script>(\r?\n)*/m';
+		
+		$output = '';
+		
+		if (preg_match_all($regex_js, $header_data, $matches)) {
+			$jsfiles = $this->buildURL($matches[1]);
+			
+			$header_data = preg_replace($regex_js, '', $header_data);
+			
+			$output .= "\n" . '<script type="text/javascript" src="' . $jsfiles . '"></script>' . "\n";
+		}
+		
+		return $header_data.$output;
+	}
+	
+	function buildURL($urls) {
+		$url = $this->plugin_path.'/jscsscomp/';
+		foreach ($urls as $path) {
+			$path = str_replace(get_bloginfo('home') . '/', '', $path);
+			$url .= $path . ',';
+		}
+		return $url;
+	}
+	
+	function regist_header_comp() {
+		global $wp_filter;
+		
+		$max_priority = max(array_keys($wp_filter['wp_head'])) + 1;
+		
+		add_action('wp_head', array(&$this, 'comp_start'), 0);
+		add_action('wp_head', array(&$this, 'comp_end'), $max_priority);
+	}
+	
+	function regist_rewrite($rewrite) {
+		$plugin_path_rewrite = str_replace(get_option('home'), '', get_option('siteurl')) . '/wp-content/plugins/' . $this->plugin_name;
+		$url = $plugin_path_rewrite . '/jscsscomp/';
+		
+		$rule = 'RewriteEngine on' . "\n";
+		$rule .= 'RewriteCond %{REQUEST_URI} !.*wp-admin.*' . "\n";
+		$rule .= 'RewriteRule ^(.*)\.css ' . $url . '$1.css [L]' . "\n";
+		
+		return $rule . $rewrite;
+	}
+	
+	function regist_menu() {
+		 add_options_page(__('Script Compressor Options', $this->domain), __('Script Compressor', $this->domain), 8, 'sc_option_page', array(&$this, 'sc_options_page'));
+	}
+
+	function sc_options_page() {
+		global $wp_rewrite;
+		
+		if (isset($_POST['action'])) {
+			switch ($_POST['action']) {
+				case 'update':
+					$this->options['sc_comp'] = array();
+					foreach ($_POST['sc_comp'] as $set)
+						$this->options['sc_comp'][$set] = true;
+					
+					$this->update_sc_option();
+					
+					$this->set_hooks();
+					$wp_rewrite->flush_rules();
+					
+					echo '<div class="updated"><p><strong>' . __('Options saved', $this->domain) . '</strong></p></div>';
+					break;
+				case 'remove':
+					$this->delete_sc_option();
+					$this->set_hooks();
+					$wp_rewrite->flush_rules();
+					
+					echo '<div class="updated"><p><strong>' . __('Options removed', $this->domain) . '</strong></p></div>';
+					break;
+			}
+		}
+		
+		$value = array();
+		if (isset($this->options['sc_comp'])) {
+			foreach ($this->options['sc_comp'] as $col => $whether)
+				$value[$col] = $whether ? 'checked="checked" ' : '';
+		}
+		?>
+
+<div class="wrap">
+<h2><?php _e('Script Compressor Options', $this->domain) ?></h2>
+<form action="?page=sc_option_page" method="post" id="sc_option">
+<table class="form-table">
+<tbody>
+<tr valign="top">
+<th scope="row"><?php _e('Auto-compression', $this->domain) ?></th>
+<td>
+	<p>
+		<label><input type="checkbox" name="sc_comp[]" value="auto_js_comp" <?php echo $value['auto_js_comp'] ?>/> <?php _e('Javascript compression for headers', $this->domain) ?></label>
+	</p>
+	<p>
+		<label><input type="checkbox" name="sc_comp[]" value="css_comp" <?php echo $value['css_comp'] ?>/> <?php _e('CSS compression', $this->domain) ?></label>
+	</p>
+</td>
+</tr>
+</tbody></table>
+<p class="submit">
+<input type="hidden" name="action" value="update" />
+<input type="submit" value="<?php _e('Update Options', $this->domain) ?>" name="submit"/>
+</p>
+</form>
+<h2><?php _e('Instructions', $this->domain) ?></h2>
+<h3><?php _e('Additional template tags', $this->domain) ?></h3>
+<p><?php _e('Javascripts between <code>&lt;?php sc_comp_start() ?&gt;</code> and <code>&lt;?php sc_comp_end() ?&gt;</code> will be compressed by this plugin.', $this->domain) ?></p>
+<p><?php _e('If you check "Javascript compression for headers", the contents of wp_head() will be compressed automatically.', $this->domain) ?></p>
+<h2><?php _e('Notes', $this->domain) ?></h2>
+<ul>
+<li><?php _e('This plugin makes caches in the compression progress.', $this->domain) ?></li>
+<li><?php _e('Only files located in the same server as your WordPress can be compressed.', $this->domain) ?></li>
+<li><?php _e('The extensions of Javascript and CSS should be .js and .css respectively.', $this->domain) ?></li>
+</ul>
+<h2><?php _e('Remove options', $this->domain) ?></h2>
+<p><?php _e('You can remove the above options from the database.', $this->domain) ?></p>
+<form action="?page=sc_option_page" method="post" id="sc_remove_option">
+<p class="submit">
+<input type="hidden" name="action" value="remove" />
+<input id="sc_remove_bt" type="submit" value="<?php _e('Remove options', $this->domain) ?>" name="submit" />
+</p>
+</form>
+</div>
+
+		<?php
+	}
+}
+
+function sc_comp_start() {
+	global $scriptcomp;
+	
+	$scriptcomp->comp_start();
+}
+
+function sc_comp_end() {
+	global $scriptcomp;
+	
+	$scriptcomp->comp_end();
+}
+
+$scriptcomp = &new ScriptCompressor();
+
+?>

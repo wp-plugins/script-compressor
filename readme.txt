@@ -1,0 +1,30 @@
+=== Script Compressor ===
+Contributors: Regen
+Tags: compress, javascript, css
+Requires at least: 2.5
+Tested up to: 2.5
+Stable tag: 1.0
+
+This plugin compresses javascript files and css files.
+
+== Description ==
+
+This plugin compresses javascript files and CSS files loaded by the theme or other plugins automatically.
+Extra spaces, lines, and comments will be deleted.
+The Compressor is based on [jscsscomp](http://code.google.com/p/jscsscomp/).
+
+= Features =
+
+*   Auto-compression for wp_head()
+*   Template tags which provide javascript compression
+*   You can turn on/off compressions in the admin page
+
+== Installation ==
+
+1. Upload the extracted plugin folder and contained files to your /wp-content/plugins/ directory
+2. Activate the plugin through the 'Plugins' menu in WordPress
+3. Navigate to Settings -> Script Compressor
+
+== Screenshots ==
+
+1. A part of the admin page.

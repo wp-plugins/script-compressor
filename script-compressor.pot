@@ -1,0 +1,90 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Script Compressor\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-04-30 17:09+0900\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: \n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: C:\\svn\\script-compressor\n"
+
+#: C:\svn\script-compressor/script-compressor.php:122
+#: C:\svn\script-compressor/script-compressor.php:160
+msgid "Script Compressor Options"
+msgstr "Script Compressor オプション"
+
+#: C:\svn\script-compressor/script-compressor.php:122
+msgid "Script Compressor"
+msgstr "Script Compressor"
+
+#: C:\svn\script-compressor/script-compressor.php:140
+msgid "Options saved"
+msgstr "設定が保存されました"
+
+#: C:\svn\script-compressor/script-compressor.php:147
+msgid "Options removed"
+msgstr "設定が削除されました"
+
+#: C:\svn\script-compressor/script-compressor.php:165
+msgid "Auto-compression"
+msgstr "自動圧縮"
+
+#: C:\svn\script-compressor/script-compressor.php:168
+msgid "Javascript compression for headers"
+msgstr "ヘッダーにJavascript圧縮自動適用"
+
+#: C:\svn\script-compressor/script-compressor.php:171
+msgid "CSS compression"
+msgstr "CSS圧縮使用"
+
+#: C:\svn\script-compressor/script-compressor.php:178
+msgid "Update Options"
+msgstr "設定を保存"
+
+#: C:\svn\script-compressor/script-compressor.php:181
+msgid "Instructions"
+msgstr "利用方法"
+
+#: C:\svn\script-compressor/script-compressor.php:182
+msgid "Additional template tags"
+msgstr "追加のテンプレートタグ"
+
+#: C:\svn\script-compressor/script-compressor.php:183
+msgid "Javascripts between <code>&lt;?php sc_comp_start() ?&gt;</code> and <code>&lt;?php sc_comp_end() ?&gt;</code> will be compressed by this plugin."
+msgstr "<code>&lt;?php sc_comp_start() ?&gt;</code>と<code>&lt;?php sc_comp_end() ?&gt;</code>で括った部分のJavascriptが圧縮されます。"
+
+#: C:\svn\script-compressor/script-compressor.php:184
+msgid "If you check \"Javascript compression for headers\", the contents of wp_head() will be compressed automatically."
+msgstr "\"ヘッダーにJavascript圧縮自動適用\"を使用した場合はwp_head()の内容が自動的に圧縮されます。"
+
+#: C:\svn\script-compressor/script-compressor.php:185
+msgid "Notes"
+msgstr "注意点"
+
+#: C:\svn\script-compressor/script-compressor.php:187
+msgid "This plugin makes caches in the compression progress."
+msgstr "圧縮処理のために、キャッシュが行われます。"
+
+#: C:\svn\script-compressor/script-compressor.php:188
+msgid "Only files located in the same server as your WordPress can be compressed."
+msgstr "圧縮できるファイルは、サーバー内にあるファイルのみです。"
+
+#: C:\svn\script-compressor/script-compressor.php:189
+msgid "The extensions of Javascript and CSS should be .js and .css respectively."
+msgstr "JavascriptとCSSの拡張子はそれぞれ .js、.css である必要があります。"
+
+#: C:\svn\script-compressor/script-compressor.php:191
+#: C:\svn\script-compressor/script-compressor.php:196
+msgid "Remove options"
+msgstr "オプションを削除"
+
+#: C:\svn\script-compressor/script-compressor.php:192
+msgid "You can remove the above options from the database."
+msgstr "データベースから上のオプションのデータを削除できます。"
+
