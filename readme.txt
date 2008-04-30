@@ -11,7 +11,7 @@ This plugin compresses javascript files and css files.
 
 This plugin compresses javascript files and CSS files loaded by the theme or other plugins automatically.
 Extra spaces, lines, and comments will be deleted.
-The Compressor is based on [jscsscomp](http://code.google.com/p/jscsscomp/).
+The compressor is based on [jscsscomp](http://code.google.com/p/jscsscomp/).
 
 = Features =
 
