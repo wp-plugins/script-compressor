@@ -3,7 +3,7 @@ Contributors: Regen
 Tags: compress, javascript, css
 Requires at least: 2.5
 Tested up to: 2.5
-Stable tag: 1.0
+Stable tag: 1.1
 
 This plugin compresses javascript files and css files.
 
@@ -22,8 +22,9 @@ The compressor is based on [jscsscomp](http://code.google.com/p/jscsscomp/).
 == Installation ==
 
 1. Upload the extracted plugin folder and contained files to your /wp-content/plugins/ directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Navigate to Settings -> Script Compressor
+2. Give the write permission to /wp-content/plugins/script-compressor/jscsscomp/cache
+3. Activate the plugin through the 'Plugins' menu in WordPress
+4. Navigate to Settings -> Script Compressor
 
 == Screenshots ==
 

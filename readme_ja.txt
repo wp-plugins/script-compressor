@@ -3,9 +3,9 @@ Contributors: Regen
 Tags: compress, javascript, css
 Requires at least: 2.5
 Tested up to: 2.5
-Stable tag: 1.0
+Stable tag: 1.1
 
-This plugin compresses javascript files and css files.
+このプラグインはJavascript、CSSを圧縮するプラグインです。
 
 == Description ==
 
@@ -22,8 +22,9 @@ This plugin compresses javascript files and css files.
 == インストール ==
 
 1. /wp-content/plugins/ に解凍したプラグインをアップロードしてください
-2. プラグインメニューから有効化してください
-3. 設定 -> Script Compressor から設定してください
+2. /wp-content/plugins/script-compressor/jscsscomp/cache へ書き込み権限を与えてください
+3. プラグインメニューから有効化してください
+4. 設定 -> Script Compressor から設定してください
 
 == スクリーンショット ==
 
