@@ -74,7 +74,7 @@ class ScriptCompressor {
 	}
 	
 	function do_compress($header_data) {
-		$regex_js = '/<script\s.*src=(?:"|\')(.+?)(?:"|\').*>.*<\/script>(\r?\n)*/m';
+		$regex_js = '/<script\s.*src=(?:"|\')(.+?\.js(?:\?.*)?)(?:"|\').*>.*<\/script>(\r?\n)*/m';
 		
 		$output = '';
 		
