@@ -131,6 +131,7 @@ class ScriptCompressor {
 					$this->options['sc_comp'] = array();
 					foreach ($_POST['sc_comp'] as $set)
 						$this->options['sc_comp'][$set] = true;
+					$this->options['charaset'] = $_POST['charaset'];
 					
 					$this->update_sc_option();
 					
@@ -170,6 +171,12 @@ class ScriptCompressor {
 	<p>
 		<label><input type="checkbox" name="sc_comp[]" value="css_comp" <?php echo $value['css_comp'] ?>/> <?php _e('CSS compression', $this->domain) ?></label>
 	</p>
+</td>
+</tr>
+<tr valign="top">
+<th scope="row"><?php _e('Script charaset (default: utf-8)', $this->domain) ?></th>
+<td>
+	<input type="text" name="charaset" value="<?php echo $this->options['charaset'] ?>" size="20" class="code" />
 </td>
 </tr>
 </tbody></table>

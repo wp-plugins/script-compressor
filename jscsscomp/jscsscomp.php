@@ -22,11 +22,18 @@
  * @version $Id: jscsscomp.php 21 2007-04-28 10:31:36Z flashkot $
  */
 
+require_once('../../../../wp-config.php');
+global $scriptcomp;
+
 //error_reporting(E_ALL);
 //ini_set('display_errors', true);
 
 define('CACHE_DIR' , realpath('cache/'));
-define('FILES_ENCODING' , 'UTF-8');
+
+if ($scriptcomp->options['charaset'])
+	define('FILES_ENCODING' , $scriptcomp->options['charaset']);
+else
+	define('FILES_ENCODING' , 'utf-8');
 
 // Disable zlib compression, if present, for duration of this script.  
 // So we don't double gzip 
@@ -119,14 +126,14 @@ header('Last-Modified: '.$lmt_str);
 // we process only files with 'js' or 'css' extensions
 if($js_files > 0){
 	$file_type = 'js';
-	$Content_type = 'text/javascript; charset: ' . FILES_ENCODING;
+	$Content_type = 'text/javascript; charset=' . FILES_ENCODING;
 }
 if($css_files > 0){
 	$file_type = 'css';
-	$Content_type = 'text/css; charset: ' . FILES_ENCODING;
+	$Content_type = 'text/css; charset=' . FILES_ENCODING;
 }
 if($css_files > 0 and $js_files > 0){
-	$Content_type = 'text/plain; charset: ' . FILES_ENCODING;
+	$Content_type = 'text/plain; charset=' . FILES_ENCODING;
 }
 
 header('Content-type: ' . $Content_type);
