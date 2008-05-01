@@ -90,7 +90,7 @@ if (preg_match("/$hash/i", $_SERVER['HTTP_IF_NONE_MATCH'])) {// Look for a hash 
 	// Our hash+filetime was matched with the browser etag value so nothing
 	// has changed.  Just send the last modified date and a 304 (nothing changed) 
 	// header and exit.
-	header('Last-Modified: '.$lmt_str.' GMT', true, 304);
+	header('Last-Modified: '.$lmt_str, true, 304);
 	exit;
 }
 
@@ -104,13 +104,13 @@ header("ETag: \"{$hash}\"");
 if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
    if ($newestFile <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
       // No change so send a 304 header and terminate
-       header('Last-Modified: '.$lmt_str.' GMT', true, 304);
+       header('Last-Modified: '.$lmt_str, true, 304);
        exit;
     }
 }
 
 // Set the last modified date as the date of the NEWEST file in the list.
-header('Last-Modified: '.$lmt_str.' GMT');
+header('Last-Modified: '.$lmt_str);
 
 // End *BROWSER* Cache Control
 /////////////////////////////////////////////////////////////////////////////
