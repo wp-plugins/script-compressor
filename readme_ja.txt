@@ -3,7 +3,7 @@ Contributors: Regen
 Tags: compress, javascript, css
 Requires at least: 2.5
 Tested up to: 2.5
-Stable tag: 1.1
+Stable tag: 1.1.1
 
 このプラグインはJavascript、CSSを圧縮するプラグインです。
 
