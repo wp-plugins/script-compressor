@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Script Compressor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-03 15:12+0900\n"
+"POT-Creation-Date: 2008-05-03 17:38+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Regen <g.regen100@gmail.com>\n"
 "Language-Team: \n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: C:\\svn\\script-compressor\\trunk\n"
 
 #: C:\svn\script-compressor\trunk/script-compressor.php:122
-#: C:\svn\script-compressor\trunk/script-compressor.php:161
+#: C:\svn\script-compressor\trunk/script-compressor.php:162
 msgid "Script Compressor Options"
 msgstr "Script Compressor オプション"
 
@@ -23,76 +23,88 @@ msgstr "Script Compressor オプション"
 msgid "Script Compressor"
 msgstr "Script Compressor"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:141
+#: C:\svn\script-compressor\trunk/script-compressor.php:142
 msgid "Options saved"
 msgstr "設定が保存されました"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:148
+#: C:\svn\script-compressor\trunk/script-compressor.php:149
 msgid "Options removed"
 msgstr "設定が削除されました"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:166
+#: C:\svn\script-compressor\trunk/script-compressor.php:167
 msgid "Auto-compression"
 msgstr "自動圧縮"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:169
+#: C:\svn\script-compressor\trunk/script-compressor.php:170
 msgid "Javascript compression for headers"
 msgstr "ヘッダーにJavascript圧縮自動適用"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:172
+#: C:\svn\script-compressor\trunk/script-compressor.php:173
 msgid "CSS compression"
 msgstr "CSS圧縮使用"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:177
+#: C:\svn\script-compressor\trunk/script-compressor.php:178
 msgid "Script charaset"
 msgstr "ファイルの文字コード"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:180
+#: C:\svn\script-compressor\trunk/script-compressor.php:181
 msgid "Default: utf-8"
 msgstr "デフォルト: utf-8"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:186
+#: C:\svn\script-compressor\trunk/script-compressor.php:185
+msgid "CSS compression condition"
+msgstr "CSS圧縮をする条件"
+
+#: C:\svn\script-compressor\trunk/script-compressor.php:188
+msgid "This text is inserted in the upper part of RewriteRule added by this plugin in your .htaccess. Please see <a href=\"http://httpd.apache.org/docs/2.0/mod/mod_rewrite.html#rewritecond\">RewriteCond doc</a>."
+msgstr "このテキストは .htaccess の中の、このプラグインによって追加される RewriteRule の上に挿入されます。<a href=\"http://httpd.apache.org/docs/2.0/mod/mod_rewrite.html#rewritecond\">RewriteCond の説明</a>を見てください。"
+
+#: C:\svn\script-compressor\trunk/script-compressor.php:189
+msgid "Example: <code>RewriteCond %{REQUEST_URI} !.*wp-admin.*</code>"
+msgstr "例: <code>RewriteCond %{REQUEST_URI} !.*wp-admin.*</code>"
+
+#: C:\svn\script-compressor\trunk/script-compressor.php:195
 msgid "Update Options"
 msgstr "設定を保存"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:189
+#: C:\svn\script-compressor\trunk/script-compressor.php:198
 msgid "Instructions"
 msgstr "利用方法"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:190
+#: C:\svn\script-compressor\trunk/script-compressor.php:199
 msgid "Additional template tags"
 msgstr "追加のテンプレートタグ"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:191
+#: C:\svn\script-compressor\trunk/script-compressor.php:200
 msgid "Javascripts between <code>&lt;?php function_exists('sc_comp_start') or sc_comp_start() ?&gt;</code> and <code>&lt;?php function_exists('sc_comp_end') or sc_comp_end() ?&gt;</code> will be compressed by this plugin."
 msgstr "<code>&lt;?php function_exists('sc_comp_start') or sc_comp_start() ?&gt;</code>と<code>&lt;?php function_exists('sc_comp_end') or sc_comp_end() ?&gt;</code>で括った部分のJavascriptが圧縮されます。"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:192
+#: C:\svn\script-compressor\trunk/script-compressor.php:201
 msgid "If you check \"Javascript compression for headers\", the contents of wp_head() will be compressed automatically."
 msgstr "\"ヘッダーにJavascript圧縮自動適用\"を使用した場合はwp_head()の内容が自動的に圧縮されます。"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:193
+#: C:\svn\script-compressor\trunk/script-compressor.php:202
 msgid "Notes"
 msgstr "注意点"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:195
+#: C:\svn\script-compressor\trunk/script-compressor.php:204
 msgid "This plugin makes caches in the compression progress."
 msgstr "圧縮処理のために、キャッシュが行われます。"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:196
+#: C:\svn\script-compressor\trunk/script-compressor.php:205
 msgid "Only files located in the same server as your WordPress can be compressed."
 msgstr "圧縮できるファイルは、サーバー内にあるファイルのみです。"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:197
+#: C:\svn\script-compressor\trunk/script-compressor.php:206
 msgid "The extensions of Javascript and CSS should be .js and .css respectively."
 msgstr "JavascriptとCSSの拡張子はそれぞれ .js、.css である必要があります。"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:199
-#: C:\svn\script-compressor\trunk/script-compressor.php:204
+#: C:\svn\script-compressor\trunk/script-compressor.php:208
+#: C:\svn\script-compressor\trunk/script-compressor.php:213
 msgid "Remove options"
 msgstr "オプションを削除"
 
-#: C:\svn\script-compressor\trunk/script-compressor.php:200
+#: C:\svn\script-compressor\trunk/script-compressor.php:209
 msgid "You can remove the above options from the database."
 msgstr "データベースから上のオプションのデータを削除できます。"
 

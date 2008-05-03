@@ -112,7 +112,7 @@ class ScriptCompressor {
 		$url = $plugin_path_rewrite . '/jscsscomp/';
 		
 		$rule = 'RewriteEngine on' . "\n";
-		$rule .= 'RewriteCond %{REQUEST_URI} !.*wp-admin.*' . "\n";
+		if (!empty($this->options['rewritecond'])) $rule .= $this->options['rewritecond'] . "\n";
 		$rule .= 'RewriteRule ^(.*)\.css ' . $url . '$1.css [L]' . "\n";
 		
 		return $rule . $rewrite;
@@ -132,6 +132,7 @@ class ScriptCompressor {
 					foreach ($_POST['sc_comp'] as $set)
 						$this->options['sc_comp'][$set] = true;
 					$this->options['charaset'] = $_POST['charaset'];
+					$this->options['rewritecond'] = $_POST['rewritecond'];
 					
 					$this->update_sc_option();
 					
@@ -180,6 +181,14 @@ class ScriptCompressor {
 	<?php _e('Default: utf-8', $this->domain) ?>
 </td>
 </tr>
+<tr valign="top">
+<th scope="row"><?php _e('CSS compression condition', $this->domain) ?></th>
+<td>
+	<textarea class="code" rows="3" cols="40" name="rewritecond"><?php echo $this->options['rewritecond'] ?></textarea>
+	<p><?php _e('This text is inserted in the upper part of RewriteRule added by this plugin in your .htaccess. Please see <a href="http://httpd.apache.org/docs/2.0/mod/mod_rewrite.html#rewritecond">RewriteCond doc</a>.', $this->domain) ?></p>
+	<p><?php _e('Example: <code>RewriteCond %{REQUEST_URI} !.*wp-admin.*</code>', $this->domain) ?></p>
+</td>
+</tr>
 </tbody></table>
 <p class="submit">
 <input type="hidden" name="action" value="update" />
@@ -199,9 +208,9 @@ class ScriptCompressor {
 <h2><?php _e('Remove options', $this->domain) ?></h2>
 <p><?php _e('You can remove the above options from the database.', $this->domain) ?></p>
 <form action="?page=sc_option_page" method="post" id="sc_remove_option">
-<p class="submit">
+<p>
 <input type="hidden" name="action" value="remove" />
-<input id="sc_remove_bt" type="submit" value="<?php _e('Remove options', $this->domain) ?>" name="submit" />
+<input id="sc_remove_bt" type="submit" class="button" value="<?php _e('Remove options', $this->domain) ?>" name="submit" />
 </p>
 </form>
 </div>
