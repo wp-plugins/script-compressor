@@ -14,101 +14,97 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: C:\\svn\\script-compressor\n"
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:122
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:160
-#: C:\svn\script-compressor/trunk/script-compressor.php:122
-#: C:\svn\script-compressor/trunk/script-compressor.php:161
+#: C:\svn\script-compressor\trunk/script-compressor.php:122
+#: C:\svn\script-compressor\trunk/script-compressor.php:161
 msgid "Script Compressor Options"
 msgstr ""
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:122
-#: C:\svn\script-compressor/trunk/script-compressor.php:122
+#: C:\svn\script-compressor\trunk/script-compressor.php:122
 msgid "Script Compressor"
 msgstr ""
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:140
-#: C:\svn\script-compressor/trunk/script-compressor.php:141
+#: C:\svn\script-compressor\trunk/script-compressor.php:141
 msgid "Options saved"
 msgstr ""
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:147
-#: C:\svn\script-compressor/trunk/script-compressor.php:148
+#: C:\svn\script-compressor\trunk/script-compressor.php:148
 msgid "Options removed"
 msgstr ""
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:165
-#: C:\svn\script-compressor/trunk/script-compressor.php:166
+#: C:\svn\script-compressor\trunk/script-compressor.php:166
 msgid "Auto-compression"
 msgstr ""
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:168
-#: C:\svn\script-compressor/trunk/script-compressor.php:169
+#: C:\svn\script-compressor\trunk/script-compressor.php:169
 msgid "Javascript compression for headers"
 msgstr ""
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:171
-#: C:\svn\script-compressor/trunk/script-compressor.php:172
+#: C:\svn\script-compressor\trunk/script-compressor.php:172
 msgid "CSS compression"
 msgstr ""
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:178
-#: C:\svn\script-compressor/trunk/script-compressor.php:185
+#: C:\svn\script-compressor\trunk/script-compressor.php:177
+msgid "Script charaset"
+msgstr ""
+
+#: C:\svn\script-compressor\trunk/script-compressor.php:180
+msgid "Default: utf-8"
+msgstr ""
+
+#: C:\svn\script-compressor\trunk/script-compressor.php:186
 msgid "Update Options"
 msgstr ""
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:181
-#: C:\svn\script-compressor/trunk/script-compressor.php:188
+#: C:\svn\script-compressor\trunk/script-compressor.php:189
 msgid "Instructions"
 msgstr ""
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:182
-#: C:\svn\script-compressor/trunk/script-compressor.php:189
+#: C:\svn\script-compressor\trunk/script-compressor.php:190
 msgid "Additional template tags"
 msgstr ""
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:183
-#: C:\svn\script-compressor/trunk/script-compressor.php:190
-msgid "Javascripts between <code>&lt;?php sc_comp_start() ?&gt;</code> and <code>&lt;?php sc_comp_end() ?&gt;</code> will be compressed by this plugin."
+#: C:\svn\script-compressor\trunk/script-compressor.php:191
+msgid "Javascripts between <code>&lt;?php function_exists('sc_comp_start') or sc_comp_start() ?&gt;</code> and <code>&lt;?php function_exists('sc_comp_end') or sc_comp_end() ?&gt;</code> will be compressed by this plugin."
 msgstr ""
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:184
-#: C:\svn\script-compressor/trunk/script-compressor.php:191
+#: C:\svn\script-compressor\trunk/script-compressor.php:192
 msgid "If you check \"Javascript compression for headers\", the contents of wp_head() will be compressed automatically."
 msgstr ""
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:185
-#: C:\svn\script-compressor/trunk/script-compressor.php:192
+#: C:\svn\script-compressor\trunk/script-compressor.php:193
 msgid "Notes"
 msgstr ""
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:187
-#: C:\svn\script-compressor/trunk/script-compressor.php:194
+#: C:\svn\script-compressor\trunk/script-compressor.php:195
 msgid "This plugin makes caches in the compression progress."
 msgstr ""
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:188
-#: C:\svn\script-compressor/trunk/script-compressor.php:195
+#: C:\svn\script-compressor\trunk/script-compressor.php:196
 msgid "Only files located in the same server as your WordPress can be compressed."
 msgstr ""
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:189
-#: C:\svn\script-compressor/trunk/script-compressor.php:196
+#: C:\svn\script-compressor\trunk/script-compressor.php:197
 msgid "The extensions of Javascript and CSS should be .js and .css respectively."
 msgstr ""
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:191
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:196
-#: C:\svn\script-compressor/trunk/script-compressor.php:198
-#: C:\svn\script-compressor/trunk/script-compressor.php:203
+#: C:\svn\script-compressor\trunk/script-compressor.php:199
+#: C:\svn\script-compressor\trunk/script-compressor.php:204
 msgid "Remove options"
 msgstr ""
 
-#: C:\svn\script-compressor/tags/1.0/script-compressor.php:192
-#: C:\svn\script-compressor/trunk/script-compressor.php:199
+#: C:\svn\script-compressor\trunk/script-compressor.php:200
 msgid "You can remove the above options from the database."
 msgstr ""
 
-#: C:\svn\script-compressor/trunk/script-compressor.php:177
-msgid "Script charaset (default: utf-8)"
-msgstr ""
+#, fuzzy
+#~ msgid ""
+#~ "Javascripts between <code>&lt;?php sc_comp_start() ?&gt;</code> and "
+#~ "<code>&lt;?php sc_comp_end() ?&gt;</code> will be compressed by this "
+#~ "plugin."
+#~ msgstr ""
+#~ "<code>&lt;?php function_exists('sc_comp_start') or sc_comp_start() ?&gt;</"
+#~ "code>Ç∆<code>&lt;?php function_exists('sc_comp_end') or sc_comp_end() ?"
+#~ "&gt;</code>Ç≈äáÇ¡ÇΩïîï™ÇÃJavascriptÇ™à≥èkÇ≥ÇÍÇ‹Ç∑ÅB"
+#~ msgid "Script charaset (default: utf-8)"
+#~ msgstr ""
 

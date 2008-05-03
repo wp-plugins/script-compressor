@@ -174,9 +174,10 @@ class ScriptCompressor {
 </td>
 </tr>
 <tr valign="top">
-<th scope="row"><?php _e('Script charaset (default: utf-8)', $this->domain) ?></th>
+<th scope="row"><?php _e('Script charaset', $this->domain) ?></th>
 <td>
-	<input type="text" name="charaset" value="<?php echo $this->options['charaset'] ?>" size="20" class="code" />
+	<input type="text" name="charaset" value="<?php echo $this->options['charaset'] ?>" size="20" class="code" /><br />
+	<?php _e('Default: utf-8', $this->domain) ?>
 </td>
 </tr>
 </tbody></table>
@@ -187,7 +188,7 @@ class ScriptCompressor {
 </form>
 <h2><?php _e('Instructions', $this->domain) ?></h2>
 <h3><?php _e('Additional template tags', $this->domain) ?></h3>
-<p><?php _e('Javascripts between <code>&lt;?php sc_comp_start() ?&gt;</code> and <code>&lt;?php sc_comp_end() ?&gt;</code> will be compressed by this plugin.', $this->domain) ?></p>
+<p><?php _e('Javascripts between <code>&lt;?php function_exists(\'sc_comp_start\') or sc_comp_start() ?&gt;</code> and <code>&lt;?php function_exists(\'sc_comp_end\') or sc_comp_end() ?&gt;</code> will be compressed by this plugin.', $this->domain) ?></p>
 <p><?php _e('If you check "Javascript compression for headers", the contents of wp_head() will be compressed automatically.', $this->domain) ?></p>
 <h2><?php _e('Notes', $this->domain) ?></h2>
 <ul>
