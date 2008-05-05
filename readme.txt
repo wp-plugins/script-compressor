@@ -3,7 +3,7 @@ Contributors: Regen
 Tags: compress, javascript, css
 Requires at least: 2.5
 Tested up to: 2.5.1
-Stable tag: 1.2
+Stable tag: 1.3
 
 This plugin compresses javascript files and css files.
 
