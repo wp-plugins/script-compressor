@@ -95,6 +95,7 @@ class ScriptCompressor {
 			$path = str_replace(get_bloginfo('home') . '/', '', $path);
 			$url .= $path . ',';
 		}
+		$url = substr($url, 0, -1);
 		return $url;
 	}
 	

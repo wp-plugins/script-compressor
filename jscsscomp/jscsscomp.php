@@ -48,15 +48,20 @@ header('Vary: Accept-Encoding');
 $js_files = 0;
 $css_files = 0;
 
-// convert request param 'q' to files list 
-$files =  explode(',', $_GET['q']);
+// convert request param 'q' to files list
+$url = get_option('home') . $_SERVER['REQUEST_URI'];
+$plugin_url = $scriptcomp->plugin_path . '/jscsscomp/';
+if (!(strpos($url, $plugin_url) === false))
+	$row_files = str_replace($plugin_url, '', $url);
+else
+	$row_files = $_GET['q'];
+$files =  explode(',', $row_files);
 
 array_walk($files, 'path_trim');
 
 if($js_files + $css_files == 0){
 	// TODO: output correct code then file extension is unknown
 	header("HTTP/1.0 404 Not Found");
-	print_r($_GET['q']);
 	exit;
 }
 
@@ -156,7 +161,7 @@ if(!$compress_file){
 		// remove tabs, spaces, newlines, etc.
 		$content = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $content);
 		
-		return $content;
+		echo $content;
 		exit;
 	}else{
 		$cache_file = CACHE_DIR . '/' . $hash;
@@ -239,7 +244,7 @@ function path_trim(&$val){
 		return false;
 	}
 	
-	$val = preg_replace('/\.(js|css)(?:\?.*)$/', '.$1', $val);
+	$val = preg_replace('/\.(js|css)(?:\?.*)?$/iD', '.$1', $val);
 	
 	if(strtolower($matches[1]) == 'js'){
 		++$js_files;
