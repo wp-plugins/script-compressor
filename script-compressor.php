@@ -24,6 +24,8 @@ class ScriptCompressor {
 		load_plugin_textdomain($this->domain, 'wp-content/plugins/'.$this->plugin_name);
 		
 		add_action('admin_menu', array(&$this, 'regist_menu'));
+		
+		register_activation_hook(__FILE__, array(&$this, 'active'));
 		register_deactivation_hook(__FILE__, array(&$this, 'deactive'));
 		
 		$this->get_sc_option();
@@ -41,6 +43,12 @@ class ScriptCompressor {
 			add_filter('mod_rewrite_rules', array(&$this, 'regist_rewrite'));
 		else
 			remove_filter('mod_rewrite_rules', array(&$this, 'regist_rewrite'));
+	}
+	
+	function active() {
+		global $wp_rewrite;
+		
+		$wp_rewrite->flush_rules();
 	}
 	
 	function deactive() {
@@ -90,7 +98,7 @@ class ScriptCompressor {
 	}
 	
 	function buildURL($urls) {
-		$url = $this->plugin_path.'/jscsscomp/';
+		$url = $this->plugin_path . '/jscsscomp/jscsscomp.php?q=';
 		foreach ($urls as $path) {
 			$path = str_replace(get_bloginfo('home') . '/', '', $path);
 			$url .= $path . ',';
@@ -110,11 +118,11 @@ class ScriptCompressor {
 	
 	function regist_rewrite($rewrite) {
 		$plugin_path_rewrite = str_replace(get_option('home'), '', get_option('siteurl')) . '/wp-content/plugins/' . $this->plugin_name;
-		$url = $plugin_path_rewrite . '/jscsscomp/';
+		$url = $plugin_path_rewrite . '/jscsscomp/jscsscomp.php';
 		
 		$rule = 'RewriteEngine on' . "\n";
 		if (!empty($this->options['rewritecond'])) $rule .= $this->options['rewritecond'] . "\n";
-		$rule .= 'RewriteRule ^(.*)\.css ' . $url . '$1.css [L]' . "\n";
+		$rule .= 'RewriteRule ^(.*)\.css ' . $url . '?q=$1.css [NC,L]' . "\n";
 		
 		return $rule . $rewrite;
 	}
