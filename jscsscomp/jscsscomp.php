@@ -49,12 +49,12 @@ $js_files = 0;
 $css_files = 0;
 
 // convert request param 'q' to files list
-$url = get_option('home') . $_SERVER['REQUEST_URI'];
-$plugin_url = $scriptcomp->plugin_path . '/jscsscomp/jscsscomp.php?q=';
-if (!(strpos($url, $plugin_url) === false))
-	$row_files = str_replace($plugin_url, '', $url);
-else
+$url = $_SERVER['SCRIPT_URI'] . '?' . $_SERVER['QUERY_STRING'];
+$plugin_url = $_SERVER['SCRIPT_URI'] . '?q=';
+if (strpos($url, $plugin_url) === false)
 	$row_files = $_GET['q'];
+else
+	$row_files = str_replace($plugin_url, '', $url);
 $files =  explode(',', $row_files);
 
 array_walk($files, 'path_trim');

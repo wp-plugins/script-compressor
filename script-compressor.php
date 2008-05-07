@@ -82,7 +82,7 @@ class ScriptCompressor {
 	}
 	
 	function do_compress($header_data) {
-		$regex_js = '/<script\s.*src=(?:"|\')(.+?\.js(?:\?.*)?)(?:"|\').*>.*<\/script>(\r?\n)*/m';
+		$regex_js = '/<script\s.*src=(?:"|\')(?:(?!http)|(?:https?:\/\/' . preg_quote($_SERVER['HTTP_HOST']) . '))\/?(.+?\.js(?:\?.*)?)(?:"|\').*>.*<\/script>(\r?\n)*/m';
 		
 		$output = '';
 		
@@ -100,7 +100,6 @@ class ScriptCompressor {
 	function buildURL($urls) {
 		$url = $this->plugin_path . '/jscsscomp/jscsscomp.php?q=';
 		foreach ($urls as $path) {
-			$path = str_replace(get_bloginfo('home') . '/', '', $path);
 			$url .= $path . ',';
 		}
 		$url = substr($url, 0, -1);
