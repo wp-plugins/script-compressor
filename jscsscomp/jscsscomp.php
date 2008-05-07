@@ -98,7 +98,7 @@ $fileHash = md5($longFilename);   // This generates a key from the collective fi
 $hash = $fileHash . '-'.$lmt;     // This appends the newest file date to the key.
 //$headers = getallheaders();       // Get all the headers the browser sent us.
 
-if (preg_match("/$hash/i", $_SERVER['HTTP_IF_NONE_MATCH'])) {// Look for a hash match
+if (!headers_sent() && preg_match("/$hash/i", $_SERVER['HTTP_IF_NONE_MATCH'])) {// Look for a hash match
 	// Our hash+filetime was matched with the browser etag value so nothing
 	// has changed.  Just send the last modified date and a 304 (nothing changed) 
 	// header and exit.
@@ -114,11 +114,11 @@ header("ETag: \"{$hash}\"");
 // If there's no change we'll send a cache control header and die.
 
 if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-   if ($newestFile <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-      // No change so send a 304 header and terminate
-       header('Last-Modified: '.$lmt_str, true, 304);
-       exit;
-    }
+	if (!headers_sent() && $newestFile <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+		// No change so send a 304 header and terminate
+		header('Last-Modified: '.$lmt_str, true, 304);
+		exit;
+	}
 }
 
 // Set the last modified date as the date of the NEWEST file in the list.
