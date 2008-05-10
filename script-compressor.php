@@ -192,7 +192,7 @@ class ScriptCompressor {
 <tr valign="top">
 <th scope="row"><?php _e('CSS compression condition', $this->domain) ?></th>
 <td>
-	<textarea class="code" rows="3" cols="40" name="rewritecond"><?php echo $this->options['rewritecond'] ?></textarea>
+	<textarea class="code" rows="3" cols="40" wrap="off" name="rewritecond"><?php echo $this->options['rewritecond'] ?></textarea>
 	<p><?php _e('This text is inserted in the upper part of RewriteRule added by this plugin in your .htaccess. Please see <a href="http://httpd.apache.org/docs/2.0/mod/mod_rewrite.html#rewritecond">RewriteCond doc</a>.', $this->domain) ?></p>
 	<p><?php _e('Example: <code>RewriteCond %{REQUEST_URI} !.*wp-admin.*</code>', $this->domain) ?></p>
 </td>
