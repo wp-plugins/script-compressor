@@ -140,7 +140,7 @@ class ScriptCompressor {
 					foreach ($_POST['sc_comp'] as $set)
 						$this->options['sc_comp'][$set] = true;
 					$this->options['charaset'] = $_POST['charaset'];
-					$this->options['rewritecond'] = $_POST['rewritecond'];
+					$this->options['rewritecond'] = str_replace("\r\n", "\n", $_POST['rewritecond']);
 					
 					$this->update_sc_option();
 					
