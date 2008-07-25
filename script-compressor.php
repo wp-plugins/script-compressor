@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Plugin Name: Script Compressor
 Plugin URI: http://rp.exadge.com/2008/04/30/script-compressor/
@@ -8,14 +8,51 @@ Author: Regen
 Author URI: http://rp.exadge.com
 */
 
-/*
-    Copyright (C) 2008 Regen
-    This program is licensed under the GNU GPL.
-*/
+/**
+ * @author Regen
+ * @copyright Copyright (C) 2008 Regen
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @link http://rp.exadge.com/2008/04/30/script-compressor/ Script Compressor
+ * @access public
+ */
 
+/**
+ * Script Compressor main class.
+ * 
+ */
 class ScriptCompressor {
-	var $domain, $plugin_name, $plugin_path, $options;
+	/**
+	 * Gettext domain.
+	 * 
+	 * @var string
+	 */
+	var $domain;
 	
+	/**
+	 * Pluguin name.
+	 * 
+	 * @var string
+	 */
+	var $plugin_name;
+	
+	/**
+	 * Path of this plugin.
+	 * 
+	 * @var string
+	 */
+	var $plugin_path;
+	
+	/**
+	 * Pluguin options.
+	 * 
+	 * @var array
+	 */
+	var $options;
+	
+	/**
+	 * Initialize ScriptCompressor.
+	 * 
+	 */
 	function ScriptCompressor() {
 		$this->domain = 'script-compressor';
 		$this->plugin_name = 'script-compressor';
@@ -33,6 +70,10 @@ class ScriptCompressor {
 		$this->set_hooks();
 	}
 	
+	/**
+	 * Set WP hooks.
+	 * 
+	 */
 	function set_hooks() {
 		if (isset($this->options['sc_comp']['auto_js_comp']))
 			add_action('get_header', array(&$this, 'regist_header_comp'));
@@ -45,58 +86,99 @@ class ScriptCompressor {
 			remove_filter('mod_rewrite_rules', array(&$this, 'regist_rewrite'));
 	}
 	
+	/**
+	 * WP activation hook.
+	 * 
+	 */
 	function active() {
 		global $wp_rewrite;
 		
 		$wp_rewrite->flush_rules();
 	}
 	
+	/**
+	 * WP deactivation hook.
+	 * 
+	 */
 	function deactive() {
 		global $wp_rewrite;
 		
 		remove_action('get_header', array(&$this, 'regist_header_comp'));
-		remove_filter('mod_rewrite_rules', array(&$this, 'regist_rewrite'));
+		remove_filter('mod_rewrite_rules', array(&$this, 'rewrite_sc'));
 		
 		$wp_rewrite->flush_rules();
 	}
 	
-	function get_sc_option() {
+	/**
+	 * Get pluguin options.
+	 * 
+	 */
+	function get_option() {
 		$this->options = (array)get_option('scriptcomp_option');
 	}
 	
-	function update_sc_option() {
+	/**
+	 * Save pluguin options.
+	 * 
+	 */
+	function update_option() {
 		update_option('scriptcomp_option', $this->options);
 	}
 	
-	function delete_sc_option() {
+	/**
+	 * Delete pluguin options.
+	 * 
+	 */
+	function delete_option() {
 		$this->options = array();
 		delete_option('scriptcomp_option');
 	}
 	
+	/**
+	 * Start javascript compression.
+	 * 
+	 */
 	function comp_start() {
-		ob_start(array(&$this, 'do_compress'));
+		ob_start(array(&$this, 'compress'));
 	}
 	
+	/**
+	 * End javascript compression.
+	 * 
+	 */
 	function comp_end() {
 		ob_end_flush();
 	}
 	
-	function do_compress($header_data) {
-		$regex_js = '/<script\s.*src=(?:"|\')(?:(?!http)|(?:https?:\/\/' . preg_quote($_SERVER['HTTP_HOST']) . '))\/?(.+?\.js(?:\?.*)?)(?:"|\').*>\s*<\/script>(?:\r?\n)*/m';
+	/**
+	 * Compress content.
+	 *
+	 * @param string $content Compression target.
+	 * @return string Compressed content.
+	 */
+	function compress($content) {
+		$regex_js = '%<script\s.*src=(?:"|\')(?:(?!http)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST']) . '))/?(.+?\.js(?:\?.*)?)(?:"|\').*>\s*</script>(?:\r?\n)*%m';
 		
 		$output = '';
 		
-		if (preg_match_all($regex_js, $header_data, $matches)) {
+		if (preg_match_all($regex_js, $content, $matches)) {
 			$jsfiles = $this->buildURL($matches[1]);
 			
-			$header_data = preg_replace($regex_js, '', $header_data);
+			$content = preg_replace($regex_js, '', $content);
 			
 			$output .= "\n" . '<script type="text/javascript" src="' . $jsfiles . '"></script>' . "\n";
 		}
 		
-		return $header_data.$output;
+		return $content . $output;
 	}
 	
+	/**
+	 * Build URL for compression.
+	 *
+	 * @param array $urls matches.
+	 * @return string URL.
+	 * @see ScriptCompressor::compress()
+	 */
 	function buildURL($urls) {
 		$url = $this->plugin_path . '/jscsscomp/jscsscomp.php?q=';
 		foreach ($urls as $path) {
@@ -106,6 +188,10 @@ class ScriptCompressor {
 		return $url;
 	}
 	
+	/**
+	 * Regist WP_head hooks.
+	 *
+	 */
 	function regist_header_comp() {
 		global $wp_filter;
 		
@@ -115,7 +201,13 @@ class ScriptCompressor {
 		add_action('wp_head', array(&$this, 'comp_end'), $max_priority);
 	}
 	
-	function regist_rewrite($rewrite) {
+	/**
+	 * WP hook for rewrite.
+	 *
+	 * @param string $rewrite Rewrite data.
+	 * @return string Rewrite data with rules of this pluguin.
+	 */
+	function rewrite_sc($rewrite) {
 		$plugin_path_rewrite = str_replace(get_option('home'), '', get_option('siteurl')) . '/wp-content/plugins/' . $this->plugin_name;
 		$url = $plugin_path_rewrite . '/jscsscomp/jscsscomp.php';
 		
@@ -126,10 +218,18 @@ class ScriptCompressor {
 		return $rule . $rewrite;
 	}
 	
+	/**
+	 * Regist this plugin to WP menu.
+	 *
+	 */
 	function regist_menu() {
 		 add_options_page(__('Script Compressor Options', $this->domain), __('Script Compressor', $this->domain), 8, 'sc_option_page', array(&$this, 'sc_options_page'));
 	}
 
+	/**
+	 * Pluguin option page.
+	 *
+	 */
 	function sc_options_page() {
 		global $wp_rewrite;
 		
@@ -142,7 +242,7 @@ class ScriptCompressor {
 					$this->options['charaset'] = $_POST['charaset'];
 					$this->options['rewritecond'] = str_replace("\r\n", "\n", $_POST['rewritecond']);
 					
-					$this->update_sc_option();
+					$this->update_option();
 					
 					$this->set_hooks();
 					$wp_rewrite->flush_rules();
@@ -150,7 +250,7 @@ class ScriptCompressor {
 					echo '<div class="updated"><p><strong>' . __('Options saved', $this->domain) . '</strong></p></div>';
 					break;
 				case 'remove':
-					$this->delete_sc_option();
+					$this->delete_option();
 					$this->set_hooks();
 					$wp_rewrite->flush_rules();
 					
@@ -228,18 +328,22 @@ class ScriptCompressor {
 	}
 }
 
+$scriptcomp = &new ScriptCompressor();
+
+/**
+ * Start javascript compression.
+ */
 function sc_comp_start() {
 	global $scriptcomp;
 	
 	$scriptcomp->comp_start();
 }
 
+/**
+ * End javascript compression.
+ */
 function sc_comp_end() {
 	global $scriptcomp;
 	
 	$scriptcomp->comp_end();
 }
-
-$scriptcomp = &new ScriptCompressor();
-
-?>
