@@ -34,6 +34,13 @@ class Compressor {
 	var $gzip;
 	
 	/**
+	 * Whether replace paths
+	 *
+	 * @var bool
+	 */
+	var $replacePath;
+	
+	/**
 	 * Cache directory.
 	 *
 	 * @var string
@@ -60,12 +67,14 @@ class Compressor {
 	 * @param array|string $files Target file(s).
 	 * @param string $charset Charset in content-type.
 	 * @param bool $gzip Whether compress by gzip
+	 * @param bool $replacePath Whether replace paths.
 	 * @param string $cache Cache directory.
 	 * @return Compressor
 	 */
-	function Compressor($files, $charset = 'utf-8', $gzip = false, $cache = 'cache') {
+	function Compressor($files, $charset = 'utf-8', $gzip = false, $replacePath = false, $cache = 'cache') {
 		$this->files = is_array($files) ? $files : array($files);
 		$this->charset = $charset;
+		$this->replacePath = $replacePath;
 		$this->cacheDir = $cache;
 		
 		$this->setType();
@@ -173,7 +182,23 @@ class Compressor {
 		
 		$content = '';
 		foreach($this->files as $file){
-			$content .= file_get_contents($file) . "\n\n";
+			$file_content = file_get_contents($file) . "\n\n";
+			if ($this->type == 'css' && $this->replacePath) {
+				if (preg_match_all('%url\((?:"|\')?(?:(?!http)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST']) . '))/?(.+?)(?:"|\')?\)%i', $file_content, $matches, PREG_SET_ORDER)) {
+					$from = $to = array();
+					foreach ($matches as $val) {
+						$from[] = $val[0];
+						$to[] =
+							'url("' .
+							(isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] .
+							str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname($file)) . '/' .
+							preg_replace('%^\.?/%', '', $val[1]) .
+							'")';
+					}
+					$file_content = str_replace($from, $to, $file_content);
+				}
+			}
+			$content .= $file_content;
 		}
 		
 		return $content;
@@ -211,7 +236,7 @@ class Compressor {
 			switch ($this->type) {
 				case 'js':
 					require_once 'jsmin.php';
-					$content = JSMin::minify($conetnt);
+					$content = JSMin::minify($content);
 					break;
 				case 'css':
 					$content = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $content);

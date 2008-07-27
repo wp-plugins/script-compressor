@@ -79,12 +79,12 @@ class ScriptCompressor {
 	 * 
 	 */
 	function set_hooks() {
-		if (isset($this->options['sc_comp']['auto_js_comp']))
+		if ($this->options['sc_comp']['auto_js_comp'] || ($this->options['sc_comp']['css_comp'] && $this->options['css_method'] == 'composed'))
 			add_action('get_header', array(&$this, 'regist_header_comp'));
 		else
 			remove_action('get_header', array(&$this, 'regist_header_comp'));
 		
-		if (isset($this->options['sc_comp']['css_comp']))
+		if ($this->options['sc_comp']['css_comp'])
 			add_filter('mod_rewrite_rules', array(&$this, 'rewrite_sc'));
 		else
 			remove_filter('mod_rewrite_rules', array(&$this, 'rewrite_sc'));
@@ -119,6 +119,21 @@ class ScriptCompressor {
 	 */
 	function get_option() {
 		$this->options = (array)get_option('scriptcomp_option');
+		
+		/* {{{ Set default value */
+		if (!isset($this->options['sc_comp']['auto_js_comp'])) {
+			$this->options['sc_comp']['auto_js_comp'] = true;
+		}
+		if (!isset($this->options['sc_comp']['css_comp'])) {
+			$this->options['sc_comp']['css_comp'] = true;
+		}
+		if (!isset($this->options['css_method'])) {
+			$this->options['css_method'] = 'respective';
+		}
+		if (!isset($this->options['gzip'])) {
+			$this->options['gzip'] = false;
+		}
+		/* }}} */
 	}
 	
 	/**
@@ -162,15 +177,27 @@ class ScriptCompressor {
 	 */
 	function compress($content) {
 		$regex_js = '%<script\s.*src=(?:"|\')(?:(?!http)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST']) . '))/?(.+?\.js(?:\?.*)?)(?:"|\').*>\s*</script>(?:\r?\n)*%m';
+		$regex_css = '%<link\s.*href=(?:"|\')(?:(?!http)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST']) . '))/?(.+?\.css(?:\?.*)?)(?:"|\').*/?>(?:\r?\n)*%m';
 		
 		$output = '';
 		
-		if (preg_match_all($regex_js, $content, $matches)) {
-			$jsfiles = $this->buildURL($matches[1]);
-			
-			$content = preg_replace($regex_js, '', $content);
-			
-			$output .= "\n" . '<script type="text/javascript" src="' . $jsfiles . '"></script>' . "\n";
+		if ($this->options['sc_comp']['auto_js_comp']) {
+			if (preg_match_all($regex_js, $content, $matches)) {
+				$jsfiles = $this->buildURL($matches[1]);
+				
+				$content = preg_replace($regex_js, '', $content);
+				
+				$output .= '<script type="text/javascript" src="' . $jsfiles . '"></script>' . "\n";
+			}
+		}
+		if ($this->options['sc_comp']['css_comp'] && $this->options['css_method'] == 'composed') {
+			if (preg_match_all($regex_css, $content, $matches)) {
+				$cssfiles = $this->buildURL($matches[1]);
+				
+				$content = preg_replace($regex_css, '', $content);
+				
+				$output .= '<link rel="stylesheet" href="' . $cssfiles . '" type="text/css" media="all" />' . "\n";
+			}
 		}
 		
 		return $content . $output;
@@ -234,8 +261,9 @@ class ScriptCompressor {
 	function rewrite_sc($rewrite) {
 		$plugin_path_rewrite = str_replace(get_option('home'), '', get_option('siteurl')) . '/wp-content/plugins/' . $this->plugin_name;
 		$url = $plugin_path_rewrite . '/jscsscomp.php';
+		$rule = '';
 		
-		$rule = 'RewriteEngine on' . "\n";
+		$rule .= 'RewriteEngine on' . "\n";
 		if (!empty($this->options['rewritecond'])) $rule .= $this->options['rewritecond'] . "\n";
 		$rule .= 'RewriteRule ^(.*)\.css ' . $url . '?q=$1.css [NC,T=text/css,L]' . "\n";
 		
@@ -261,10 +289,12 @@ class ScriptCompressor {
 			switch ($_POST['action']) {
 				case 'update':
 					$this->options['sc_comp'] = array();
-					foreach ($_POST['sc_comp'] as $set)
+					foreach ($_POST['sc_comp'] as $set) {
 						$this->options['sc_comp'][$set] = true;
-					$this->options['charaset'] = $_POST['charaset'];
+					}
+					$this->options['css_method'] = $_POST['css_method'];
 					$this->options['rewritecond'] = str_replace("\r\n", "\n", $_POST['rewritecond']);
+					$this->options['gzip'] = isset($_POST['gzip']);
 					
 					$this->update_option();
 					
@@ -284,10 +314,23 @@ class ScriptCompressor {
 		}
 		
 		$value = array();
+		$checked = 'checked="checked" ';
 		if (isset($this->options['sc_comp'])) {
-			foreach ($this->options['sc_comp'] as $col => $whether)
-				$value[$col] = $whether ? 'checked="checked" ' : '';
+			foreach ($this->options['sc_comp'] as $col => $whether) {
+				$value[$col] = $whether ? $checked : '';
+			}
 		}
+		switch ($this->options['css_method']) {
+			case 'respective':
+				$value['css_method']['respective'] = $checked;
+				$value['css_method']['composed'] = '';
+				break;
+			case 'composed':
+				$value['css_method']['respective'] = '';
+				$value['css_method']['composed'] = $checked;
+				break;
+		}
+		$value['gzip'] = $this->options['gzip'] ? $checked : '';
 		?>
 
 <div class="wrap">
@@ -299,7 +342,7 @@ class ScriptCompressor {
 <th scope="row"><?php _e('Auto-compression', $this->domain) ?></th>
 <td>
 	<p>
-		<label><input type="checkbox" name="sc_comp[]" value="auto_js_comp" <?php echo $value['auto_js_comp'] ?>/> <?php _e('Javascript compression for headers', $this->domain) ?></label>
+		<label><input type="checkbox" name="sc_comp[]" value="auto_js_comp" <?php echo $value['auto_js_comp'] ?>/> <?php _e('Javascript compression for wp_head()', $this->domain) ?></label>
 	</p>
 	<p>
 		<label><input type="checkbox" name="sc_comp[]" value="css_comp" <?php echo $value['css_comp'] ?>/> <?php _e('CSS compression', $this->domain) ?></label>
@@ -307,18 +350,32 @@ class ScriptCompressor {
 </td>
 </tr>
 <tr valign="top">
-<th scope="row"><?php _e('Script charaset', $this->domain) ?></th>
+<th scope="row"><?php _e('CSS compression method', $this->domain) ?></th>
 <td>
-	<input type="text" name="charaset" value="<?php echo $this->options['charaset'] ?>" size="20" class="code" /><br />
-	<?php _e('Default: utf-8', $this->domain) ?>
+	<p>
+		<label><input type="radio" name="css_method" value="respective" <?php echo $value['css_method']['respective'] ?>/> <?php _e('Respective', $this->domain) ?></label><br />
+		<?php _e('This method compresses <strong>respective</strong> CSS files (former method). This uses .htaccess and mod_rewrite.', $this->domain) ?>
+	</p>
+	<p>
+		<label><input type="radio" name="css_method" value="composed" <?php echo $value['css_method']['composed'] ?>/> <?php _e('Composed', $this->domain) ?></label><br />
+		<?php _e('This method compresses <strong>composed</strong> CSS files in wp_head(). The frequency of the HTTP request is less than "respective" but there is a possibility that paths of images in CSS files break and that The media type becomes ineffective.', $this->domain) ?>
+	</p>
 </td>
 </tr>
 <tr valign="top">
-<th scope="row"><?php _e('CSS compression condition', $this->domain) ?></th>
+<th scope="row"><?php _e('CSS compression condition (mod_rewrite)', $this->domain) ?></th>
 <td>
 	<textarea class="code" rows="3" cols="40" wrap="off" name="rewritecond"><?php echo $this->options['rewritecond'] ?></textarea>
 	<p><?php _e('This text is inserted in the upper part of RewriteRule added by this plugin in your .htaccess. Please see <a href="http://httpd.apache.org/docs/2.0/mod/mod_rewrite.html#rewritecond">RewriteCond doc</a>.', $this->domain) ?></p>
 	<p><?php _e('Example: <code>RewriteCond %{REQUEST_URI} !.*wp-admin.*</code>', $this->domain) ?></p>
+</td>
+</tr>
+<tr valign="top">
+<th scope="row"><?php _e('Gzip compression', $this->domain) ?></th>
+<td>
+	<p>
+		<label><input type="checkbox" name="gzip" value="gzip" <?php echo $value['gzip'] ?>/> <?php _e('Use gzip compression for cache and output.', $this->domain) ?></label>
+	</p>
 </td>
 </tr>
 </tbody></table>
@@ -329,7 +386,7 @@ class ScriptCompressor {
 </form>
 <h2><?php _e('Instructions', $this->domain) ?></h2>
 <h3><?php _e('Additional template tags', $this->domain) ?></h3>
-<p><?php _e('Javascripts between <code>&lt;?php function_exists(\'sc_comp_start\') or sc_comp_start() ?&gt;</code> and <code>&lt;?php function_exists(\'sc_comp_end\') or sc_comp_end() ?&gt;</code> will be compressed by this plugin.', $this->domain) ?></p>
+<p><?php _e('Javascripts and CSS between <code>&lt;?php function_exists(\'sc_comp_start\') or sc_comp_start() ?&gt;</code> and <code>&lt;?php function_exists(\'sc_comp_end\') or sc_comp_end() ?&gt;</code> will be compressed by this plugin.', $this->domain) ?></p>
 <p><?php _e('e.g.', $this->domain) ?><br /><code style="display: block; padding: 6px; background-color: #eeeeee; border: #dfdfdf solid 1px;"><?php _e('&lt;?php function_exists(\'sc_comp_start\') or sc_comp_start() ?&gt;<br />&lt;script type="text/javascript" src="foo.js"&gt;&lt;/script&gt;<br />&lt;script type="text/javascript" src="bar.js"&gt;&lt;/script&gt;<br />&lt;?php function_exists(\'sc_comp_end\') or sc_comp_end() ?&gt;', $this->domain) ?></code></p>
 <p><?php _e('If you check "Javascript compression for headers", the contents of wp_head() will be compressed automatically.', $this->domain) ?></p>
 <h2><?php _e('Notes', $this->domain) ?></h2>
