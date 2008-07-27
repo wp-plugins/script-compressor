@@ -56,16 +56,20 @@ class ScriptCompressor {
 	function ScriptCompressor() {
 		$this->domain = 'script-compressor';
 		$this->plugin_name = 'script-compressor';
-		$this->plugin_path = get_option('siteurl').'/wp-content/plugins/'.$this->plugin_name;
-		
-		load_plugin_textdomain($this->domain, 'wp-content/plugins/'.$this->plugin_name);
+		if (defined('WP_PLUGIN_URL')) {
+			$this->plugin_path = WP_PLUGIN_URL . '/' . $this->plugin_name;
+			load_plugin_textdomain($this->domain, str_replace(ABSPATH, '', WP_PLUGIN_DIR) . '/' . $this->plugin_name);
+		} else {
+			$this->plugin_path = get_option('siteurl') . '/' . PLUGINDIR . '/'.$this->plugin_name;
+			load_plugin_textdomain($this->domain, PLUGINDIR . '/' . $this->plugin_name);
+		}
 		
 		add_action('admin_menu', array(&$this, 'regist_menu'));
 		
 		register_activation_hook(__FILE__, array(&$this, 'active'));
 		register_deactivation_hook(__FILE__, array(&$this, 'deactive'));
 		
-		$this->get_sc_option();
+		$this->get_option();
 		
 		$this->set_hooks();
 	}
@@ -81,9 +85,9 @@ class ScriptCompressor {
 			remove_action('get_header', array(&$this, 'regist_header_comp'));
 		
 		if (isset($this->options['sc_comp']['css_comp']))
-			add_filter('mod_rewrite_rules', array(&$this, 'regist_rewrite'));
+			add_filter('mod_rewrite_rules', array(&$this, 'rewrite_sc'));
 		else
-			remove_filter('mod_rewrite_rules', array(&$this, 'regist_rewrite'));
+			remove_filter('mod_rewrite_rules', array(&$this, 'rewrite_sc'));
 	}
 	
 	/**
@@ -180,12 +184,32 @@ class ScriptCompressor {
 	 * @see ScriptCompressor::compress()
 	 */
 	function buildURL($urls) {
-		$url = $this->plugin_path . '/jscsscomp/jscsscomp.php?q=';
+		$url = $this->plugin_path . '/jscsscomp.php?q=';
 		foreach ($urls as $path) {
 			$url .= $path . ',';
 		}
 		$url = substr($url, 0, -1);
 		return $url;
+	}
+	
+	/**
+	 * Get script paths from URI.
+	 *
+	 * @return array Local script paths.
+	 */
+	function getScripts() {
+		if (strpos($_SERVER['SCRIPT_URI'], $this->plugin_path) === false)
+			$files = array($_SERVER['REQUEST_URI']);
+		else
+			$files =  explode(',', $_GET['q']);
+		
+		array_walk($files,
+			create_function('&$file',
+				'$file = str_replace(\'../\', \'\', $file);$file = $_SERVER[\'DOCUMENT_ROOT\'] . ($file[0] == \'/\' ? \'\' : \'/\') . $file;'
+			)
+		);
+		
+		return $files;
 	}
 	
 	/**
@@ -209,7 +233,7 @@ class ScriptCompressor {
 	 */
 	function rewrite_sc($rewrite) {
 		$plugin_path_rewrite = str_replace(get_option('home'), '', get_option('siteurl')) . '/wp-content/plugins/' . $this->plugin_name;
-		$url = $plugin_path_rewrite . '/jscsscomp/jscsscomp.php';
+		$url = $plugin_path_rewrite . '/jscsscomp.php';
 		
 		$rule = 'RewriteEngine on' . "\n";
 		if (!empty($this->options['rewritecond'])) $rule .= $this->options['rewritecond'] . "\n";
