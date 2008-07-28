@@ -228,7 +228,7 @@ class ScriptCompressor {
 		if (strpos($_SERVER['SCRIPT_URI'], $this->plugin_path) === false)
 			$files = array($_SERVER['REQUEST_URI']);
 		else
-			$files =  explode(',', $_GET['q']);
+			$files =  explode(',', str_replace(str_replace(get_option('home'), '', $this->plugin_path . '/jscsscomp.php?q='), '', $_SERVER['REQUEST_URI']));
 		
 		array_walk($files,
 			create_function('&$file',

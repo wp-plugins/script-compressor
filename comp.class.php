@@ -115,13 +115,16 @@ class Compressor {
 	function setType() {
 		$js_files = $css_files = 0;
 		foreach ($this->files as $id => $file) {
-			if (!preg_match('/.+\.(js|css)(?:\?.*)?$/iD', $file, $matches)) {
+			if (!preg_match('/(.+\.)(js|css)(?:\?.*)?$/iD', $file, $matches)) {
 				unset($this->files[$id]);
+				continue;
 			}
 			
-			if(strtolower($matches[1]) == 'js'){
+			$this->files[$id] = $matches[1] . $matches[2];
+			
+			if(strtolower($matches[2]) == 'js'){
 				++$js_files;
-			} else if (strtolower($matches[1]) == 'css'){
+			} else if (strtolower($matches[2]) == 'css'){
 				++$css_files;
 			}
 		}
