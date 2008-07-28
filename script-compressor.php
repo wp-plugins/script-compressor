@@ -358,7 +358,7 @@ class ScriptCompressor {
 	</p>
 	<p>
 		<label><input type="radio" name="css_method" value="composed" <?php echo $value['css_method']['composed'] ?>/> <?php _e('Composed', $this->domain) ?></label><br />
-		<?php _e('This method compresses <strong>composed</strong> CSS files in wp_head(). The frequency of the HTTP request is less than "respective" but there is a possibility that paths of images in CSS files break and that The media type becomes ineffective.', $this->domain) ?>
+		<?php _e('This method compresses <strong>composed</strong> CSS files in wp_head(). The frequency of the HTTP request is less than "Respective" but there is a possibility that paths of images in CSS files break and that The media type becomes ineffective.', $this->domain) ?>
 	</p>
 </td>
 </tr>
@@ -374,7 +374,7 @@ class ScriptCompressor {
 <th scope="row"><?php _e('Gzip compression', $this->domain) ?></th>
 <td>
 	<p>
-		<label><input type="checkbox" name="gzip" value="gzip" <?php echo $value['gzip'] ?>/> <?php _e('Use gzip compression for cache and output.', $this->domain) ?></label>
+		<label><input type="checkbox" name="gzip" value="gzip" <?php echo $value['gzip'] ?>/> <?php _e('Use gzip compression for the cache and the output.', $this->domain) ?></label>
 	</p>
 </td>
 </tr>
