@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Script Compressor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-28 12:45+0900\n"
+"POT-Creation-Date: 2008-07-28 13:25+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -96,7 +96,7 @@ msgid "Additional template tags"
 msgstr ""
 
 #: C:\svn\script-compressor\trunk/script-compressor.php:389
-msgid "Javascripts and CSS between <code>&lt;?php function_exists('sc_comp_start') or sc_comp_start() ?&gt;</code> and <code>&lt;?php function_exists('sc_comp_end') or sc_comp_end() ?&gt;</code> will be compressed by this plugin."
+msgid "Javascripts and CSS between <code>&lt;?php sc_comp_start() ?&gt;</code> and <code>&lt;?php sc_comp_end() ?&gt;</code> will be compressed by this plugin."
 msgstr ""
 
 #: C:\svn\script-compressor\trunk/script-compressor.php:390
@@ -104,7 +104,7 @@ msgid "e.g."
 msgstr ""
 
 #: C:\svn\script-compressor\trunk/script-compressor.php:390
-msgid "&lt;?php function_exists('sc_comp_start') or sc_comp_start() ?&gt;<br />&lt;script type=\"text/javascript\" src=\"foo.js\"&gt;&lt;/script&gt;<br />&lt;script type=\"text/javascript\" src=\"bar.js\"&gt;&lt;/script&gt;<br />&lt;?php function_exists('sc_comp_end') or sc_comp_end() ?&gt;"
+msgid "&lt;?php sc_comp_start() ?&gt;<br />&lt;script type=\"text/javascript\" src=\"foo.js\"&gt;&lt;/script&gt;<br />&lt;script type=\"text/javascript\" src=\"bar.js\"&gt;&lt;/script&gt;<br />&lt;?php sc_comp_end() ?&gt;"
 msgstr ""
 
 #: C:\svn\script-compressor\trunk/script-compressor.php:391
