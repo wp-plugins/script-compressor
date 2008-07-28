@@ -3,7 +3,7 @@
 Plugin Name: Script Compressor
 Plugin URI: http://rp.exadge.com/2008/04/30/script-compressor/
 Description: This plugin compresses javascript files and css files.
-Version: 1.3.1
+Version: 1.4
 Author: Regen
 Author URI: http://rp.exadge.com
 */
@@ -386,8 +386,8 @@ class ScriptCompressor {
 </form>
 <h2><?php _e('Instructions', $this->domain) ?></h2>
 <h3><?php _e('Additional template tags', $this->domain) ?></h3>
-<p><?php _e('Javascripts and CSS between <code>&lt;?php function_exists(\'sc_comp_start\') or sc_comp_start() ?&gt;</code> and <code>&lt;?php function_exists(\'sc_comp_end\') or sc_comp_end() ?&gt;</code> will be compressed by this plugin.', $this->domain) ?></p>
-<p><?php _e('e.g.', $this->domain) ?><br /><code style="display: block; padding: 6px; background-color: #eeeeee; border: #dfdfdf solid 1px;"><?php _e('&lt;?php function_exists(\'sc_comp_start\') or sc_comp_start() ?&gt;<br />&lt;script type="text/javascript" src="foo.js"&gt;&lt;/script&gt;<br />&lt;script type="text/javascript" src="bar.js"&gt;&lt;/script&gt;<br />&lt;?php function_exists(\'sc_comp_end\') or sc_comp_end() ?&gt;', $this->domain) ?></code></p>
+<p><?php _e('Javascripts and CSS between <code>&lt;?php sc_comp_start() ?&gt;</code> and <code>&lt;?php sc_comp_end() ?&gt;</code> will be compressed by this plugin.', $this->domain) ?></p>
+<p><?php _e('e.g.', $this->domain) ?><br /><code style="display: block; padding: 6px; background-color: #eeeeee; border: #dfdfdf solid 1px;"><?php _e('&lt;?php sc_comp_start() ?&gt;<br />&lt;script type="text/javascript" src="foo.js"&gt;&lt;/script&gt;<br />&lt;script type="text/javascript" src="bar.js"&gt;&lt;/script&gt;<br />&lt;?php sc_comp_end() ?&gt;', $this->domain) ?></code></p>
 <p><?php _e('If you check "Javascript compression for headers", the contents of wp_head() will be compressed automatically.', $this->domain) ?></p>
 <h2><?php _e('Notes', $this->domain) ?></h2>
 <ul>
