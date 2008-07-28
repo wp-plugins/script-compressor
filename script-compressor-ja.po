@@ -53,7 +53,7 @@ msgstr "個別に圧縮"
 
 #: C:\svn\script-compressor\trunk/script-compressor.php:357
 msgid "This method compresses <strong>respective</strong> CSS files (former method). This uses .htaccess and mod_rewrite."
-msgstr ".htaccess と mod_rewrite を使って CSS を<strong>個別に</strong>圧縮します。"
+msgstr ".htaccess と mod_rewrite を使って CSS を<strong>個別に圧縮</strong>します。"
 
 #: C:\svn\script-compressor\trunk/script-compressor.php:360
 msgid "Composed"
@@ -61,7 +61,7 @@ msgstr "まとめて圧縮"
 
 #: C:\svn\script-compressor\trunk/script-compressor.php:361
 msgid "This method compresses <strong>composed</strong> CSS files in wp_head(). The frequency of the HTTP request is less than \"Respective\" but there is a possibility that paths of images in CSS files break and that The media type becomes ineffective."
-msgstr "wp_head() の CSS を<string>まとめて圧縮</string>します。HTTP リクエストの回数は減りますが、画像のパスが壊れたり、メディアタイプが効かなくなる可能性があります。"
+msgstr "wp_head() の CSS を<strong>まとめて圧縮</strong>します。HTTP リクエストの回数は減りますが、画像のパスが壊れたり、メディアタイプが効かなくなる可能性があります。"
 
 #: C:\svn\script-compressor\trunk/script-compressor.php:366
 msgid "CSS compression condition (mod_rewrite)"
