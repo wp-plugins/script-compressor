@@ -282,9 +282,24 @@ class ScriptCompressor {
 	 *
 	 */
 	function regist_menu() {
-		 add_options_page(__('Script Compressor Options', $this->domain), __('Script Compressor', $this->domain), 8, 'sc_option_page', array(&$this, 'sc_options_page'));
+		add_options_page(__('Script Compressor Options', $this->domain), __('Script Compressor', $this->domain), 8, 'sc_option_page', array(&$this, 'sc_options_page'));
+		add_filter('plugin_action_links', array(&$this, 'add_action_links'), 10, 2);
 	}
-
+	
+	/**
+	 * Add settings link to pluguin menu.
+	 *
+	 * @param array $links action links.
+	 * @return array Links added settings link.
+	 */
+	function add_action_links($links, $file){
+		if ($file == $this->plugin_name . '/' . basename(__FILE__)) {
+			$settings_link = '<a href="options-general.php?page=sc_option_page">' . __('Settings') . '</a>';
+			$links = array_merge(array($settings_link), $links);
+		}
+		return $links;
+	}
+	
 	/**
 	 * Pluguin option page.
 	 *
