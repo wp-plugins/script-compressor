@@ -9,7 +9,13 @@ require_once 'comp.class.php';
 
 global $scriptcomp;
 
-$comp = new Compressor($scriptcomp->getScripts(), get_option('blog_charset'), $scriptcomp->options['gzip'], $scriptcomp->options['css_method'] == 'composed');
+$comp = new Compressor(
+	$scriptcomp->getScripts(),
+	get_option('blog_charset'),
+	$scriptcomp->options['gzip'],
+	$scriptcomp->options['css_method'] == 'composed',
+	$scriptcomp->options['cache']
+);
 $comp->sendHeader();
 echo $comp->getContent();
 ?>

@@ -121,17 +121,24 @@ class ScriptCompressor {
 		$this->options = (array)get_option('scriptcomp_option');
 		
 		/* {{{ Set default value */
-		if (!isset($this->options['sc_comp']['auto_js_comp'])) {
+		if (!isset($this->options['sc_comp'])) {
+			$this->options['sc_comp'] = array();
 			$this->options['sc_comp']['auto_js_comp'] = true;
-		}
-		if (!isset($this->options['sc_comp']['css_comp'])) {
 			$this->options['sc_comp']['css_comp'] = true;
+		} else if (!isset($this->options['sc_comp']['auto_js_comp'])) {
+			$this->options['sc_comp']['auto_js_comp'] = false;
+		} else if (!isset($this->options['sc_comp']['css_comp'])) {
+			$this->options['sc_comp']['css_comp'] = false;
 		}
+		
 		if (!isset($this->options['css_method'])) {
 			$this->options['css_method'] = 'respective';
 		}
 		if (!isset($this->options['gzip'])) {
 			$this->options['gzip'] = false;
+		}
+		if (!isset($this->options['cache'])) {
+			$this->options['cache'] = 'cache';
 		}
 		/* }}} */
 	}
@@ -285,12 +292,19 @@ class ScriptCompressor {
 	function sc_options_page() {
 		global $wp_rewrite;
 		
+		$cache_dir = dirname(__FILE__) . '/' . $this->options['cache'];
+		if (!is_writable($cache_dir)) {
+			echo '<div class="error"><p>' . sprintf(__('Give the write permission to %s.', $this->domain), $cache_dir) . '</p></div>';
+		}
+		
 		if (isset($_POST['action'])) {
 			switch ($_POST['action']) {
 				case 'update':
 					$this->options['sc_comp'] = array();
-					foreach ($_POST['sc_comp'] as $set) {
-						$this->options['sc_comp'][$set] = true;
+					if (isset($_POST['sc_comp'])) {
+						foreach ($_POST['sc_comp'] as $set) {
+							$this->options['sc_comp'][$set] = true;
+						}
 					}
 					$this->options['css_method'] = $_POST['css_method'];
 					$this->options['rewritecond'] = str_replace("\r\n", "\n", $_POST['rewritecond']);
