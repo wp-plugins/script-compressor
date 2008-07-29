@@ -5,34 +5,35 @@ Requires at least: 2.5
 Tested up to: 2.6
 Stable tag: 1.4.1
 
-���̃v���O�C����Javascript�ACSS�����k����v���O�C���ł��B
+このプラグインはJavascript、CSSを圧縮するプラグインです。
 
-== ���� ==
+== 説明 ==
 
-���̃v���O�C���́A�e�[�}�⑼�̃v���O�C���ɂ���ēǂݍ��܂��JavaScript��CSS�̈��k�������I�ɍs���v���O�C���ł��B
-�X�N���v�g�����k�����ƁA�X�N���v�g���̗]���ȃX�y�[�X����s�A�y�уR�����g�Ȃǂ��폜����A�Œ���܂Ő؂�l�߂��܂��B
-���k������ [jscsscomp](http://code.google.com/p/jscsscomp/) �����Ƃɂ��Ă��܂��B
+このプラグインは、テーマや他のプラグインによって読み込まれるJavaScriptとCSSの圧縮を自動的に行うプラグインです。
+スクリプトが圧縮されると、スクリプト内の余分なスペースや改行、及びコメントなどが削除され、最低限まで切り詰められます。
+圧縮処理は [jscsscomp](http://code.google.com/p/jscsscomp/) をもとにしています。
 
-= ���� =
+= 特徴 =
 
-*   ���̃v���O�C���ɂ���ēǂݍ��܂��X�N���v�g�́A�������Ȃ��Ă������I�Ɉ��k����܂��B
-*   �e�[�}�t�@�C���ɋL�q���ꂽ�X�N���v�g�́A�X�N���v�g�̓ǂݍ��݂̋L�q���w�肳�ꂽ�^�O�ň͂����Ƃň��k���邱�Ƃ��ł��܂��B
-*   ���̃v���O�C�����ǂݍ��ރX�N���v�g�̎����I�Ȉ��k�����邩�ǂ����A�Ǘ���ʂ���ύX�ł��܂��B
-*   CSS���k������������L�q�ł��܂��B
+*   他のプラグインによって読み込まれるスクリプトは、何もしなくても自動的に圧縮されます。
+*   テーマファイルに記述されたスクリプトは、スクリプトの読み込みの記述を指定されたタグで囲うことで圧縮することができます。
+*   他のプラグインが読み込むスクリプトの自動的な圧縮をするかどうか、管理画面から変更できます。
+*   CSS圧縮をする条件を記述できます。
 
-== �C���X�g�[�� ==
+== インストール ==
 
-1. /wp-content/plugins/ �ɉ𓀂����v���O�C�����A�b�v���[�h���Ă�������
-2. /wp-content/plugins/script-compressor/cache �֏������݌�����^���Ă�������
-3. �v���O�C�����j���[����L�������Ă�������
-4. �ݒ� -> Script Compressor ����ݒ肵�Ă�������
+1. /wp-content/plugins/ に解凍したプラグインをアップロードしてください
+2. /wp-content/plugins/script-compressor/cache へ書き込み権限を与えてください
+   **(バージョン1.4から変わりました)**
+3. プラグインメニューから有効化してください
+4. 設定 -> Script Compressor から設定してください
 
 == FAQ ==
 
-= CSS���K������Ȃ��Ȃ��� =
+= CSSが適応されなくなった =
 
-�L���b�V���������Ă��܂��̂ŁACSS�𒼐ڊJ���Ă���X�[�p�[�����[�h(Ctrl+F5)���Ă��������B
+キャッシュが働いていますので、CSSを直接開いてからスーパーリロード(Ctrl+F5)してください。
 
-== �X�N���[���V���b�g ==
+== スクリーンショット ==
 
-1. �Ǘ���ʂ̈ꕔ
+1. 管理画面の一部
