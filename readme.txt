@@ -23,7 +23,7 @@ The compressor is based on [jscsscomp](http://code.google.com/p/jscsscomp/).
 == Installation ==
 
 1. Upload the extracted plugin folder and contained files to your /wp-content/plugins/ directory
-2. Give the write permission to /wp-content/plugins/script-compressor/jscsscomp/cache
+2. Give the write permission to /wp-content/plugins/script-compressor/cache
 3. Activate the plugin through the 'Plugins' menu in WordPress
 4. Navigate to Settings -> Script Compressor
 

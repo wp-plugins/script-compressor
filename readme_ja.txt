@@ -23,7 +23,7 @@ Stable tag: 1.4.1
 == インストール ==
 
 1. /wp-content/plugins/ に解凍したプラグインをアップロードしてください
-2. /wp-content/plugins/script-compressor/jscsscomp/cache へ書き込み権限を与えてください
+2. /wp-content/plugins/script-compressor/cache へ書き込み権限を与えてください
 3. プラグインメニューから有効化してください
 4. 設定 -> Script Compressor から設定してください
 
