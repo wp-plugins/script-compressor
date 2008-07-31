@@ -187,16 +187,19 @@ class Compressor {
 		foreach($this->files as $file){
 			$file_content = file_get_contents($file) . "\n\n";
 			if ($this->type == 'css' && $this->replacePath) {
-				if (preg_match_all('%url\((?:"|\')?(?:(?!http)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST']) . '))/?(.+?)(?:"|\')?\)%i', $file_content, $matches, PREG_SET_ORDER)) {
+				if (preg_match_all('%url\((?:"|\')?(.+?)(?:"|\')?\)%i', $file_content, $matches, PREG_SET_ORDER)) {
 					$from = $to = array();
+					
 					foreach ($matches as $val) {
-						$from[] = $val[0];
-						$to[] =
-							'url("' .
-							(isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] .
-							str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname($file)) . '/' .
-							preg_replace('%^\.?/%', '', $val[1]) .
-							'")';
+						if (!preg_match('%(http://|data:)%', $val[1], $protocol)) {
+							$from[] = $val[0];
+							$to[] =
+								'url("' .
+								(isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] .
+								str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname($file)) . '/' .
+								preg_replace('%^\.?/%', '', $val[1]) .
+								'")';
+						}
 					}
 					$file_content = str_replace($from, $to, $file_content);
 				}

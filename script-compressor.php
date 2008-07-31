@@ -232,10 +232,11 @@ class ScriptCompressor {
 	 * @return array Local script paths.
 	 */
 	function getScripts() {
-		if (strpos($_SERVER['SCRIPT_URI'], $this->plugin_path) === false)
+		if (strpos($_SERVER['SCRIPT_URI'], $this->plugin_path) === false) {
 			$files = array($_SERVER['REQUEST_URI']);
-		else
-			$files =  explode(',', str_replace(str_replace(get_option('home'), '', $this->plugin_path . '/jscsscomp.php?q='), '', $_SERVER['REQUEST_URI']));
+		} else{
+			$files =  explode(',', preg_replace('%.+/jscsscomp\.php\?q=%', '', $_SERVER['REQUEST_URI']));
+		}
 		
 		array_walk($files,
 			create_function('&$file',
@@ -266,7 +267,7 @@ class ScriptCompressor {
 	 * @return string Rewrite data with rules of this pluguin.
 	 */
 	function rewrite_sc($rewrite) {
-		$plugin_path_rewrite = str_replace(get_option('home'), '', get_option('siteurl')) . '/wp-content/plugins/' . $this->plugin_name;
+		$plugin_path_rewrite = preg_replace('%https?://' . preg_quote($_SERVER['HTTP_HOST']) . '%', '', get_option('siteurl')) . '/wp-content/plugins/' . $this->plugin_name;
 		$url = $plugin_path_rewrite . '/jscsscomp.php';
 		$rule = '';
 		
@@ -328,16 +329,24 @@ class ScriptCompressor {
 					$this->update_option();
 					
 					$this->set_hooks();
-					$wp_rewrite->flush_rules();
 					
-					echo '<div class="updated"><p><strong>' . __('Options saved', $this->domain) . '</strong></p></div>';
+					$wp_rewrite->flush_rules();
+					if (is_writable(get_home_path() . '.htaccess')) {
+						echo '<div class="updated"><p><strong>' . __('Options saved.', $this->domain) . '</strong></p></div>';
+					} else {
+						echo '<div class="updated"><p><strong>' . __('Options saved.', $this->domain) . ' ' .__('Your .htaccess is not writable so you may need to re-save your <a href="options-permalink.php">permalink settings</a> manually.', $this->domain) . '</strong></p></div>';
+					}
 					break;
 				case 'remove':
 					$this->delete_option();
 					$this->set_hooks();
-					$wp_rewrite->flush_rules();
 					
-					echo '<div class="updated"><p><strong>' . __('Options removed', $this->domain) . '</strong></p></div>';
+					$wp_rewrite->flush_rules();
+					if (is_writable(get_home_path() . '.htaccess')) {
+						echo '<div class="updated"><p><strong>' . __('Options removed.', $this->domain) . '</strong></p></div>';
+					} else {
+						echo '<div class="updated"><p><strong>' . __('Options removed.', $this->domain) . ' ' . __('Your .htaccess is not writable so you may need to re-save your <a href="options-permalink.php">permalink settings</a> manually.', $this->domain) . '</strong></p></div>';
+					}
 					break;
 			}
 		}
@@ -413,6 +422,7 @@ class ScriptCompressor {
 <input type="submit" value="<?php _e('Update Options', $this->domain) ?>" name="submit"/>
 </p>
 </form>
+<br />
 <h2><?php _e('Instructions', $this->domain) ?></h2>
 <h3><?php _e('Additional template tags', $this->domain) ?></h3>
 <p><?php _e('Javascripts and CSS between <code>&lt;?php sc_comp_start() ?&gt;</code> and <code>&lt;?php sc_comp_end() ?&gt;</code> will be compressed by this plugin.', $this->domain) ?></p>
@@ -424,6 +434,7 @@ class ScriptCompressor {
 <li><?php _e('Only files located in the same server as your WordPress can be compressed.', $this->domain) ?></li>
 <li><?php _e('The extensions of Javascript and CSS should be .js and .css respectively.', $this->domain) ?></li>
 </ul>
+<br />
 <h2><?php _e('Remove options', $this->domain) ?></h2>
 <p><?php _e('You can remove the above options from the database.', $this->domain) ?></p>
 <form action="?page=sc_option_page" method="post" id="sc_remove_option">
