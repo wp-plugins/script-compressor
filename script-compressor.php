@@ -291,7 +291,7 @@ class ScriptCompressor {
 	 */
 	function add_action_links($links, $file){
 		if ($file == $this->plugin_name . '/' . basename(__FILE__)) {
-			$settings_link = '<a href="options-general.php?page=sc_option_page">' . __('Settings') . '</a>';
+			$settings_link = '<a href="options-general.php?page=sc_option_page">' . __('Settings', $this->domain) . '</a>';
 			$links = array_merge(array($settings_link), $links);
 		}
 		return $links;
