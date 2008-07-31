@@ -18,40 +18,40 @@ Author URI: http://rp.exadge.com
 
 /**
  * Script Compressor main class.
- * 
+ *
  */
 class ScriptCompressor {
 	/**
 	 * Gettext domain.
-	 * 
+	 *
 	 * @var string
 	 */
 	var $domain;
-	
+
 	/**
 	 * Pluguin name.
-	 * 
+	 *
 	 * @var string
 	 */
 	var $plugin_name;
-	
+
 	/**
 	 * Path of this plugin.
-	 * 
+	 *
 	 * @var string
 	 */
 	var $plugin_path;
-	
+
 	/**
 	 * Pluguin options.
-	 * 
+	 *
 	 * @var array
 	 */
 	var $options;
-	
+
 	/**
 	 * Initialize ScriptCompressor.
-	 * 
+	 *
 	 */
 	function ScriptCompressor() {
 		$this->domain = 'script-compressor';
@@ -63,63 +63,63 @@ class ScriptCompressor {
 			$this->plugin_path = get_option('siteurl') . '/' . PLUGINDIR . '/'.$this->plugin_name;
 			load_plugin_textdomain($this->domain, PLUGINDIR . '/' . $this->plugin_name);
 		}
-		
+
 		add_action('admin_menu', array(&$this, 'regist_menu'));
-		
+
 		register_activation_hook(__FILE__, array(&$this, 'active'));
 		register_deactivation_hook(__FILE__, array(&$this, 'deactive'));
-		
+
 		$this->get_option();
-		
+
 		$this->set_hooks();
 	}
-	
+
 	/**
 	 * Set WP hooks.
-	 * 
+	 *
 	 */
 	function set_hooks() {
 		if ($this->options['sc_comp']['auto_js_comp'] || ($this->options['sc_comp']['css_comp'] && $this->options['css_method'] == 'composed'))
 			add_action('get_header', array(&$this, 'regist_header_comp'));
 		else
 			remove_action('get_header', array(&$this, 'regist_header_comp'));
-		
+
 		if ($this->options['sc_comp']['css_comp'])
 			add_filter('mod_rewrite_rules', array(&$this, 'rewrite_sc'));
 		else
 			remove_filter('mod_rewrite_rules', array(&$this, 'rewrite_sc'));
 	}
-	
+
 	/**
 	 * WP activation hook.
-	 * 
+	 *
 	 */
 	function active() {
 		global $wp_rewrite;
-		
+
 		$wp_rewrite->flush_rules();
 	}
-	
+
 	/**
 	 * WP deactivation hook.
-	 * 
+	 *
 	 */
 	function deactive() {
 		global $wp_rewrite;
-		
+
 		remove_action('get_header', array(&$this, 'regist_header_comp'));
 		remove_filter('mod_rewrite_rules', array(&$this, 'rewrite_sc'));
-		
+
 		$wp_rewrite->flush_rules();
 	}
-	
+
 	/**
 	 * Get pluguin options.
-	 * 
+	 *
 	 */
 	function get_option() {
 		$this->options = (array)get_option('scriptcomp_option');
-		
+
 		/* {{{ Set default value */
 		if (!isset($this->options['sc_comp'])) {
 			$this->options['sc_comp'] = array();
@@ -130,7 +130,7 @@ class ScriptCompressor {
 		} else if (!isset($this->options['sc_comp']['css_comp'])) {
 			$this->options['sc_comp']['css_comp'] = false;
 		}
-		
+
 		if (!isset($this->options['css_method'])) {
 			$this->options['css_method'] = 'respective';
 		}
@@ -142,40 +142,40 @@ class ScriptCompressor {
 		}
 		/* }}} */
 	}
-	
+
 	/**
 	 * Save pluguin options.
-	 * 
+	 *
 	 */
 	function update_option() {
 		update_option('scriptcomp_option', $this->options);
 	}
-	
+
 	/**
 	 * Delete pluguin options.
-	 * 
+	 *
 	 */
 	function delete_option() {
 		$this->options = array();
 		delete_option('scriptcomp_option');
 	}
-	
+
 	/**
 	 * Start javascript compression.
-	 * 
+	 *
 	 */
 	function comp_start() {
 		ob_start(array(&$this, 'compress'));
 	}
-	
+
 	/**
 	 * End javascript compression.
-	 * 
+	 *
 	 */
 	function comp_end() {
 		ob_end_flush();
 	}
-	
+
 	/**
 	 * Compress content.
 	 *
@@ -185,31 +185,31 @@ class ScriptCompressor {
 	function compress($content) {
 		$regex_js = '%<script\s.*src=(?:"|\')(?:(?!http)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST']) . '))/?(.+?\.js(?:\?.*)?)(?:"|\').*>\s*</script>(?:\r?\n)*%m';
 		$regex_css = '%<link\s.*href=(?:"|\')(?:(?!http)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST']) . '))/?(.+?\.css(?:\?.*)?)(?:"|\').*/?>(?:\r?\n)*%m';
-		
+
 		$output = '';
-		
+
 		if ($this->options['sc_comp']['auto_js_comp']) {
 			if (preg_match_all($regex_js, $content, $matches)) {
 				$jsfiles = $this->buildURL($matches[1]);
-				
+
 				$content = preg_replace($regex_js, '', $content);
-				
+
 				$output .= '<script type="text/javascript" src="' . $jsfiles . '"></script>' . "\n";
 			}
 		}
 		if ($this->options['sc_comp']['css_comp'] && $this->options['css_method'] == 'composed') {
 			if (preg_match_all($regex_css, $content, $matches)) {
 				$cssfiles = $this->buildURL($matches[1]);
-				
+
 				$content = preg_replace($regex_css, '', $content);
-				
+
 				$output .= '<link rel="stylesheet" href="' . $cssfiles . '" type="text/css" media="all" />' . "\n";
 			}
 		}
-		
+
 		return $content . $output;
 	}
-	
+
 	/**
 	 * Build URL for compression.
 	 *
@@ -225,41 +225,37 @@ class ScriptCompressor {
 		$url = substr($url, 0, -1);
 		return $url;
 	}
-	
+
 	/**
 	 * Get script paths from URI.
 	 *
 	 * @return array Local script paths.
 	 */
 	function getScripts() {
-		if (strpos($_SERVER['SCRIPT_URI'], $this->plugin_path) === false) {
-			$files = array($_SERVER['REQUEST_URI']);
-		} else{
-			$files =  explode(',', preg_replace('%.+/jscsscomp\.php\?q=%', '', $_SERVER['REQUEST_URI']));
+		$files = explode(',', preg_replace('%.+/jscsscomp\.php\?q=%', '', $_SERVER['REQUEST_URI']));
+
+		foreach ($files as $id => $file) {
+			$file = str_replace('../', '', $file);
+			$file = rtrim($_SERVER['DOCUMENT_ROOT'], '\\/') . '/' . $file;
+			$files[$id] = $file;
 		}
-		
-		array_walk($files,
-			create_function('&$file',
-				'$file = str_replace(\'../\', \'\', $file);$file = $_SERVER[\'DOCUMENT_ROOT\'] . ($file[0] == \'/\' ? \'\' : \'/\') . $file;'
-			)
-		);
-		
+
 		return $files;
 	}
-	
+
 	/**
 	 * Regist WP_head hooks.
 	 *
 	 */
 	function regist_header_comp() {
 		global $wp_filter;
-		
+
 		$max_priority = max(array_keys($wp_filter['wp_head'])) + 1;
-		
+
 		add_action('wp_head', array(&$this, 'comp_start'), 0);
 		add_action('wp_head', array(&$this, 'comp_end'), $max_priority);
 	}
-	
+
 	/**
 	 * WP hook for rewrite.
 	 *
@@ -270,14 +266,14 @@ class ScriptCompressor {
 		$plugin_path_rewrite = preg_replace('%https?://' . preg_quote($_SERVER['HTTP_HOST']) . '%', '', get_option('siteurl')) . '/wp-content/plugins/' . $this->plugin_name;
 		$url = $plugin_path_rewrite . '/jscsscomp.php';
 		$rule = '';
-		
+
 		$rule .= 'RewriteEngine on' . "\n";
 		if (!empty($this->options['rewritecond'])) $rule .= $this->options['rewritecond'] . "\n";
 		$rule .= 'RewriteRule ^(.*)\.css ' . $url . '?q=$1.css [NC,T=text/css,L]' . "\n";
-		
+
 		return $rule . $rewrite;
 	}
-	
+
 	/**
 	 * Regist this plugin to WP menu.
 	 *
@@ -286,7 +282,7 @@ class ScriptCompressor {
 		add_options_page(__('Script Compressor Options', $this->domain), __('Script Compressor', $this->domain), 8, 'sc_option_page', array(&$this, 'sc_options_page'));
 		add_filter('plugin_action_links', array(&$this, 'add_action_links'), 10, 2);
 	}
-	
+
 	/**
 	 * Add settings link to pluguin menu.
 	 *
@@ -300,19 +296,19 @@ class ScriptCompressor {
 		}
 		return $links;
 	}
-	
+
 	/**
 	 * Pluguin option page.
 	 *
 	 */
 	function sc_options_page() {
 		global $wp_rewrite;
-		
+
 		$cache_dir = dirname(__FILE__) . '/' . $this->options['cache'];
 		if (!is_writable($cache_dir)) {
 			echo '<div class="error"><p>' . sprintf(__('Give the write permission to %s.', $this->domain), $cache_dir) . '</p></div>';
 		}
-		
+
 		if (isset($_POST['action'])) {
 			switch ($_POST['action']) {
 				case 'update':
@@ -325,11 +321,11 @@ class ScriptCompressor {
 					$this->options['css_method'] = $_POST['css_method'];
 					$this->options['rewritecond'] = str_replace("\r\n", "\n", $_POST['rewritecond']);
 					$this->options['gzip'] = isset($_POST['gzip']);
-					
+
 					$this->update_option();
-					
+
 					$this->set_hooks();
-					
+
 					$wp_rewrite->flush_rules();
 					if (is_writable(get_home_path() . '.htaccess')) {
 						echo '<div class="updated"><p><strong>' . __('Options saved.', $this->domain) . '</strong></p></div>';
@@ -340,7 +336,7 @@ class ScriptCompressor {
 				case 'remove':
 					$this->delete_option();
 					$this->set_hooks();
-					
+
 					$wp_rewrite->flush_rules();
 					if (is_writable(get_home_path() . '.htaccess')) {
 						echo '<div class="updated"><p><strong>' . __('Options removed.', $this->domain) . '</strong></p></div>';
@@ -350,7 +346,7 @@ class ScriptCompressor {
 					break;
 			}
 		}
-		
+
 		$value = array();
 		$checked = 'checked="checked" ';
 		if (isset($this->options['sc_comp'])) {
@@ -456,7 +452,7 @@ $scriptcomp = &new ScriptCompressor();
  */
 function sc_comp_start() {
 	global $scriptcomp;
-	
+
 	$scriptcomp->comp_start();
 }
 
@@ -465,6 +461,6 @@ function sc_comp_start() {
  */
 function sc_comp_end() {
 	global $scriptcomp;
-	
+
 	$scriptcomp->comp_end();
 }
