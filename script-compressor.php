@@ -269,7 +269,7 @@ class ScriptCompressor {
 
 		$rule .= 'RewriteEngine on' . "\n";
 		if (!empty($this->options['rewritecond'])) $rule .= $this->options['rewritecond'] . "\n";
-		$rule .= 'RewriteRule ^(.*)\.css ' . $url . '?q=$1.css [NC,T=text/css,L]' . "\n";
+		$rule .= 'RewriteRule ^(.*)\.css$ ' . $url . '?q=$1.css [NC,T=text/css,L]' . "\n";
 
 		return $rule . $rewrite;
 	}
