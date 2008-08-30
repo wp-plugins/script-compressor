@@ -16,4 +16,3 @@ $comp = new Compressor(
 );
 $comp->sendHeader();
 echo $comp->getContent();
-?>

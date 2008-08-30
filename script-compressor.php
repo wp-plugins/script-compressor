@@ -330,7 +330,7 @@ class ScriptCompressor {
 					if (is_writable(get_home_path() . '.htaccess')) {
 						echo '<div class="updated"><p><strong>' . __('Options saved.', $this->domain) . '</strong></p></div>';
 					} else {
-						echo '<div class="updated"><p><strong>' . __('Options saved.', $this->domain) . ' ' .__('Your .htaccess is not writable so you may need to re-save your <a href="options-permalink.php">permalink settings</a> manually.', $this->domain) . '</strong></p></div>';
+						echo '<div class="updated"><p><strong>' . __('Options saved.', $this->domain) . ' ' . __('Your .htaccess is not writable so you may need to re-save your <a href="options-permalink.php">permalink settings</a> manually.', $this->domain) . '</strong></p></div>';
 					}
 					break;
 				case 'remove':
