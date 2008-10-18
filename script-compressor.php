@@ -3,7 +3,7 @@
 Plugin Name: Script Compressor
 Plugin URI: http://rp.exadge.com/2008/04/30/script-compressor/
 Description: This plugin compresses javascript files and css files.
-Version: 1.4.4
+Version: 1.5
 Author: Regen
 Author URI: http://rp.exadge.com
 */
