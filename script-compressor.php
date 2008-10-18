@@ -131,15 +131,12 @@ class ScriptCompressor {
 			$this->options['sc_comp']['css_comp'] = false;
 		}
 
-		if (!isset($this->options['css_method'])) {
-			$this->options['css_method'] = 'respective';
-		}
-		if (!isset($this->options['gzip'])) {
-			$this->options['gzip'] = false;
-		}
-		if (!isset($this->options['cache'])) {
-			$this->options['cache'] = 'cache';
-		}
+		$this->options += array(
+			'jspos' => array(),
+			'css_method' => 'respective',
+			'gzip' => false,
+			'cache' => 'cache'
+		);
 		/* }}} */
 	}
 
@@ -183,46 +180,85 @@ class ScriptCompressor {
 	 * @return string Compressed content.
 	 */
 	function compress($content) {
-		$regex_js = '%<script\s.*src=(?:"|\')(?:(?!http)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST']) . '))/?(.+?\.js(?:\?.*)?)(?:"|\').*>\s*</script>(?:\r?\n)*%m';
-		$regex_css = '%<link\s.*href=(?:"|\')(?:(?!http)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST']) . '))/?(.+?\.css(?:\?.*)?)(?:"|\').*/?>(?:\r?\n)*%m';
+		$regex_js = '%<script\s.*src=(?:"|\')(?:(?!http)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST'], '%') . '))/?(.+?\.js(?:\?.*)?)(?:"|\').*>\s*</script>(?:\r?\n)*%m';
+		$regex_css = '%<link\s.*href=(?:"|\')(?:(?!http)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST'], '%') . '))/?(.+?\.css(?:\?.*)?)(?:"|\').*/?>(?:\r?\n)*%m';
 
-		$output = '';
+		$output_bef = '';
+		$output_aft = '';
 
 		if ($this->options['sc_comp']['auto_js_comp']) {
 			if (preg_match_all($regex_js, $content, $matches)) {
-				$jsfiles = $this->buildURL($matches[1]);
+				list($befjs, $aftjs) = $this->buildJsURL($matches[1]);
 
 				$content = preg_replace($regex_js, '', $content);
 
-				$output .= '<script type="text/javascript" src="' . $jsfiles . '"></script>' . "\n";
+				if (strlen($befjs) > 0) {
+					$output_bef .= '<script type="text/javascript" src="' . $befjs . '"></script>' . "\n";
+				}
+				if (strlen($aftjs) > 0) {
+					$output_aft .= '<script type="text/javascript" src="' . $aftjs . '"></script>' . "\n";
+				}
 			}
 		}
 		if ($this->options['sc_comp']['css_comp'] && $this->options['css_method'] == 'composed') {
 			if (preg_match_all($regex_css, $content, $matches)) {
-				$cssfiles = $this->buildURL($matches[1]);
+				$cssfiles = $this->buildCSSURL($matches[1]);
 
 				$content = preg_replace($regex_css, '', $content);
 
-				$output .= '<link rel="stylesheet" href="' . $cssfiles . '" type="text/css" media="all" />' . "\n";
+				if (strlen($cssfiles) > 0) {
+					$output_aft .= '<link rel="stylesheet" href="' . $cssfiles . '" type="text/css" media="all" />' . "\n";
+				}
 			}
 		}
 
-		return $content . $output;
+		return $output_bef . $content . $output_aft;
 	}
 
 	/**
-	 * Build URL for compression.
+	 * Build URL for js compression.
+	 *
+	 * @param array $urls matches.
+	 * @return array URL.
+	 * @see ScriptCompressor::compress()
+	 */
+	function buildJsURL($urls) {
+		$regex = '/';
+		foreach ($this->options['jspos'] as $js) {
+			$regex .= '(' . preg_quote($js) . ')|';
+		}
+		$regex = substr($regex, 0, -1) . '/i';
+
+		$url = $this->plugin_path . '/jscsscomp.php?q=';
+		$before = $after = $url;
+		foreach ($urls as $path) {
+			if (preg_match($regex, $path)) {
+				$before .= $path . ',';
+			} else {
+				$after .= $path . ',';
+			}
+		}
+		$before = ($before == $url) ? '' : substr($before, 0, -1);
+		$after = ($after == $url) ? '' : substr($after, 0, -1);
+
+		return array($before, $after);
+	}
+
+	/**
+	 * Build URL for css compression.
 	 *
 	 * @param array $urls matches.
 	 * @return string URL.
 	 * @see ScriptCompressor::compress()
 	 */
-	function buildURL($urls) {
+	function buildCSSURL($urls) {
 		$url = $this->plugin_path . '/jscsscomp.php?q=';
+
 		foreach ($urls as $path) {
 			$url .= $path . ',';
 		}
 		$url = substr($url, 0, -1);
+
 		return $url;
 	}
 
@@ -318,6 +354,7 @@ class ScriptCompressor {
 							$this->options['sc_comp'][$set] = true;
 						}
 					}
+					$this->options['jspos'] = explode("\n", str_replace(array("\r\n", "\n\n"), array("\n", ''), $_POST['jspos']));
 					$this->options['css_method'] = $_POST['css_method'];
 					$this->options['rewritecond'] = str_replace("\r\n", "\n", $_POST['rewritecond']);
 					$this->options['gzip'] = isset($_POST['gzip']);
@@ -364,6 +401,7 @@ class ScriptCompressor {
 				$value['css_method']['composed'] = $checked;
 				break;
 		}
+		$value['jspos'] = implode("\n", $this->options['jspos']);
 		$value['gzip'] = $this->options['gzip'] ? $checked : '';
 		?>
 
@@ -381,6 +419,13 @@ class ScriptCompressor {
 	<p>
 		<label><input type="checkbox" name="sc_comp[]" value="css_comp" <?php echo $value['css_comp'] ?>/> <?php _e('CSS compression', $this->domain) ?></label>
 	</p>
+</td>
+</tr>
+<tr valign="top">
+<th scope="row"><?php _e('Position of Javascripts', $this->domain) ?></th>
+<td>
+	<textarea class="code" rows="3" cols="40" wrap="off" name="jspos"><?php echo $value['jspos'] ?></textarea>
+	<p><?php _e('This plugin will output compressed Javascripts after the header. However some scripts need to be loaded before other scripts. So you can input a part of script URL that need to be loaded most first (one a line).', $this->domain) ?></p>
 </td>
 </tr>
 <tr valign="top">
