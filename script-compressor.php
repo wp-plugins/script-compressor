@@ -460,7 +460,7 @@ class ScriptCompressor {
 </tbody></table>
 <p class="submit">
 <input type="hidden" name="action" value="update" />
-<input type="submit" value="<?php _e('Update Options', $this->domain) ?>" name="submit"/>
+<input type="submit" class="button-primary" value="<?php _e('Update Options', $this->domain) ?>" name="submit"/>
 </p>
 </form>
 <br />
