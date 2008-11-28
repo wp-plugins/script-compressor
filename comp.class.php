@@ -76,6 +76,7 @@ class Compressor {
 		$this->charset = $charset;
 		$this->replacePath = $replacePath;
 		$this->cacheDir = $cache;
+		$this->headers = array();
 
 		$this->setType();
 
@@ -230,7 +231,7 @@ class Compressor {
 	 * @return string Compressed content.
 	 */
 	function getContent() {
-		if ($this->type == 'none' || $this->headers['HTTP'] == '304 Not Modified') return '';
+		if ($this->type == 'none' || (isset($this->headers['HTTP']) && $this->headers['HTTP'] == '304 Not Modified')) return '';
 
 		$cache_file = $this->cacheDir . '/' . $this->getHash() . '-' . $this->lastModified . ($this->gzip ? '.gz' : '');
 
