@@ -244,6 +244,7 @@ class Compressor {
 				case 'js':
 					require_once 'jsmin.php';
 					$content = JSMin::minify($content);
+					if ($content[0] == "\n") $content = substr($content, 1);
 					break;
 				case 'css':
 					$content = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $content);
