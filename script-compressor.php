@@ -133,8 +133,10 @@ class ScriptCompressor {
 
 		$this->options += array(
 			'jspos' => array(),
+			'exclude_js' => array(),
 			'css_method' => 'respective',
 			'gzip' => false,
+			'output_footer' => false,
 			'cache' => 'cache'
 		);
 		/* }}} */
@@ -186,18 +188,16 @@ class ScriptCompressor {
 		$output_bef = '';
 		$output_aft = '';
 
-		if ($this->options['sc_comp']['auto_js_comp']) {
-			if (preg_match_all($regex_js, $content, $matches)) {
-				list($befjs, $aftjs) = $this->buildJsURL($matches[1]);
+		if (preg_match_all($regex_js, $content, $matches)) {
+			list($befjs, $aftjs) = $this->buildJsURL($matches[1]);
 
-				$content = preg_replace($regex_js, '', $content);
+			$content = preg_replace($regex_js, '', $content);
 
-				if (strlen($befjs) > 0) {
-					$output_bef .= '<script type="text/javascript" src="' . $befjs . '"></script>' . "\n";
-				}
-				if (strlen($aftjs) > 0) {
-					$output_aft .= '<script type="text/javascript" src="' . $aftjs . '"></script>' . "\n";
-				}
+			if (strlen($befjs) > 0) {
+				$output_bef .= '<script type="text/javascript" src="' . $befjs . '"></script>' . "\n";
+			}
+			if (strlen($aftjs) > 0) {
+				$output_aft .= '<script type="text/javascript" src="' . $aftjs . '"></script>' . "\n";
 			}
 		}
 		if ($this->options['sc_comp']['css_comp'] && $this->options['css_method'] == 'composed') {
@@ -355,6 +355,7 @@ class ScriptCompressor {
 						}
 					}
 					$this->options['jspos'] = explode("\n", str_replace(array("\r\n", "\n\n"), array("\n", ''), $_POST['jspos']));
+					$this->options['exclude_js'] = explode("\n", str_replace(array("\r\n", "\n\n"), array("\n", ''), $_POST['exclude_js']));
 					$this->options['css_method'] = $_POST['css_method'];
 					$this->options['rewritecond'] = str_replace("\r\n", "\n", $_POST['rewritecond']);
 					$this->options['gzip'] = isset($_POST['gzip']);
@@ -402,12 +403,15 @@ class ScriptCompressor {
 				break;
 		}
 		$value['jspos'] = implode("\n", $this->options['jspos']);
+		$value['exclude_js'] = implode("\n", $this->options['exclude_js']);
 		$value['gzip'] = $this->options['gzip'] ? $checked : '';
+		$value['output_footer'] = $this->options['output_footer'] ? $checked : '';
 		?>
 
 <div class="wrap">
 <h2><?php _e('Script Compressor Options', $this->domain) ?></h2>
 <form action="?page=sc_option_page" method="post" id="sc_option">
+<h3><?php _e('General Options', $this->domain) ?></h3>
 <table class="form-table">
 <tbody>
 <tr valign="top">
@@ -422,12 +426,43 @@ class ScriptCompressor {
 </td>
 </tr>
 <tr valign="top">
+<th scope="row"><?php _e('Gzip compression', $this->domain) ?></th>
+<td>
+	<p>
+		<label><input type="checkbox" name="gzip" value="gzip" <?php echo $value['gzip'] ?>/> <?php _e('Use gzip compression for the cache and the output.', $this->domain) ?></label>
+	</p>
+</td>
+</tr>
+</tbody></table>
+<h3><?php _e('Javascript Options', $this->domain) ?></h3>
+<table class="form-table">
+<tbody>
+<tr valign="top">
 <th scope="row"><?php _e('Position of Javascripts', $this->domain) ?></th>
 <td>
 	<textarea class="code" rows="3" cols="40" wrap="off" name="jspos"><?php echo $value['jspos'] ?></textarea>
-	<p><?php _e('This plugin will output compressed Javascripts after the header. However some scripts need to be loaded before other scripts. So you can input a part of script URL that need to be loaded most first (one a line).', $this->domain) ?></p>
+	<p><?php _e('This plugin will output compressed Javascripts after the header. However some scripts need to be loaded before other scripts. So you can input a part of script URL that need to be loaded first (one per line).', $this->domain) ?></p>
 </td>
 </tr>
+<tr valign="top">
+<th scope="row"><?php _e('Exclude Javascripts', $this->domain) ?></th>
+<td>
+	<textarea class="code" rows="3" cols="40" wrap="off" name="exclude_js"><?php echo $value['exclude_js'] ?></textarea>
+	<p><?php _e('You can input a part of script URL that need to be compressed (one per line).', $this->domain) ?></p>
+</td>
+</tr>
+<tr valign="top">
+<th scope="row"><?php _e('Output Position', $this->domain) ?></th>
+<td>
+	<p>
+		<label><input type="checkbox" name="output_footer" value="output_footer" <?php echo $value['output_footer'] ?>/> <?php _e('Output compressed scripts to the footer.', $this->domain) ?></label>
+	</p>
+</td>
+</tr>
+</tbody></table>
+<h3><?php _e('CSS Options', $this->domain) ?></h3>
+<table class="form-table">
+<tbody>
 <tr valign="top">
 <th scope="row"><?php _e('CSS compression method', $this->domain) ?></th>
 <td>
@@ -447,14 +482,6 @@ class ScriptCompressor {
 	<textarea class="code" rows="3" cols="40" wrap="off" name="rewritecond"><?php echo $this->options['rewritecond'] ?></textarea>
 	<p><?php _e('This text is inserted in the upper part of RewriteRule added by this plugin in your .htaccess. Please see <a href="http://httpd.apache.org/docs/2.0/mod/mod_rewrite.html#rewritecond">RewriteCond doc</a>.', $this->domain) ?></p>
 	<p><?php _e('Example: <code>RewriteCond %{REQUEST_URI} !.*wp-admin.*</code>', $this->domain) ?></p>
-</td>
-</tr>
-<tr valign="top">
-<th scope="row"><?php _e('Gzip compression', $this->domain) ?></th>
-<td>
-	<p>
-		<label><input type="checkbox" name="gzip" value="gzip" <?php echo $value['gzip'] ?>/> <?php _e('Use gzip compression for the cache and the output.', $this->domain) ?></label>
-	</p>
 </td>
 </tr>
 </tbody></table>
