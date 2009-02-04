@@ -56,6 +56,7 @@ class ScriptCompressor {
 	function ScriptCompressor() {
 		$this->domain = 'script-compressor';
 		$this->plugin_name = 'script-compressor';
+		$this->output = '';
 		if (defined('WP_PLUGIN_URL')) {
 			$this->plugin_path = WP_PLUGIN_URL . '/' . $this->plugin_name;
 			load_plugin_textdomain($this->domain, str_replace(ABSPATH, '', WP_PLUGIN_DIR) . '/' . $this->plugin_name);
@@ -83,6 +84,11 @@ class ScriptCompressor {
 			add_action('get_header', array(&$this, 'regist_header_comp'));
 		else
 			remove_action('get_header', array(&$this, 'regist_header_comp'));
+
+		if ($this->options['output_footer'])
+			add_action('wp_footer', array(&$this, 'output_footer'));
+		else
+			remove_action('wp_footer', array(&$this, 'output_footer'));
 
 		if ($this->options['sc_comp']['css_comp'])
 			add_filter('mod_rewrite_rules', array(&$this, 'rewrite_sc'));
@@ -212,7 +218,12 @@ class ScriptCompressor {
 			}
 		}
 
-		return $output_bef . $content . $output_aft;
+		if ($this->options['output_footer']) {
+			$this->output .= $output_aft;
+			return $output_bef . $content;
+		} else {
+			return $output_bef . $content . $output_aft;
+		}
 	}
 
 	/**
@@ -260,6 +271,13 @@ class ScriptCompressor {
 		$url = substr($url, 0, -1);
 
 		return $url;
+	}
+
+	/**
+	 * Output scripts to footer.
+	 */
+	function output_footer() {
+		echo $this->output;
 	}
 
 	/**
@@ -356,6 +374,7 @@ class ScriptCompressor {
 					}
 					$this->options['jspos'] = explode("\n", str_replace(array("\r\n", "\n\n"), array("\n", ''), $_POST['jspos']));
 					$this->options['exclude_js'] = explode("\n", str_replace(array("\r\n", "\n\n"), array("\n", ''), $_POST['exclude_js']));
+					$this->options['output_footer'] = isset($_POST['output_footer']);
 					$this->options['css_method'] = $_POST['css_method'];
 					$this->options['rewritecond'] = str_replace("\r\n", "\n", $_POST['rewritecond']);
 					$this->options['gzip'] = isset($_POST['gzip']);
