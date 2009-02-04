@@ -467,7 +467,7 @@ class ScriptCompressor {
 <th scope="row"><?php _e('Exclude Javascripts', $this->domain) ?></th>
 <td>
 	<textarea class="code" rows="3" cols="40" wrap="off" name="exclude_js"><?php echo $value['exclude_js'] ?></textarea>
-	<p><?php _e('You can input a part of script URL that need to be compressed (one per line).', $this->domain) ?></p>
+	<p><?php _e('You can input a part of script URL that need not to be compressed (one per line).', $this->domain) ?></p>
 </td>
 </tr>
 <tr valign="top">
