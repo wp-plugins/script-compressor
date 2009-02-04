@@ -191,13 +191,42 @@ class ScriptCompressor {
 		$regex_js = '%<script\s.*src=(?:"|\')(?:(?!http)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST'], '%') . '))/?(.+?\.js(?:\?.*)?)(?:"|\').*>\s*</script>(?:\r?\n)*%m';
 		$regex_css = '%<link\s.*href=(?:"|\')(?:(?!http)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST'], '%') . '))/?(.+?\.css(?:\?.*)?)(?:"|\').*/?>(?:\r?\n)*%m';
 
+		$regex_before = '/';
+		foreach ($this->options['jspos'] as $js) {
+			$regex_before .= '(' . preg_quote($js) . ')|';
+		}
+		$regex_before = substr($regex_before, 0, -1) . '/i';
+
+		$regex_exlude = '/';
+		foreach ($this->options['exclude_js'] as $js) {
+			$regex_exlude .= '(' . preg_quote($js) . ')|';
+		}
+		$regex_exlude = substr($regex_exlude, 0, -1) . '/i';
+
 		$output_bef = '';
 		$output_aft = '';
+		$output_css = '';
 
-		if (preg_match_all($regex_js, $content, $matches)) {
-			list($befjs, $aftjs) = $this->buildJsURL($matches[1]);
+		if (preg_match_all($regex_js, $content, $matches, PREG_SET_ORDER)) {
+			$regex_remove = array();
+			$url = $this->plugin_path . '/jscsscomp.php?q=';
+			$befjs = $aftjs = $url;
+			foreach ($matches as $match) {
+				$full = $match[0];
+				$path = $match[1];
+				if (!preg_match($regex_exlude, $path)) {
+					if (preg_match($regex_before, $path)) {
+						$befjs .= $path . ',';
+					} else {
+						$aftjs .= $path . ',';
+					}
+					$regex_remove[] = $full;
+				}
+			}
+			$befjs = ($befjs == $url) ? '' : substr($befjs, 0, -1);
+			$aftjs = ($aftjs == $url) ? '' : substr($aftjs, 0, -1);
 
-			$content = preg_replace($regex_js, '', $content);
+			$content = str_replace($regex_remove, '', $content);
 
 			if (strlen($befjs) > 0) {
 				$output_bef .= '<script type="text/javascript" src="' . $befjs . '"></script>' . "\n";
@@ -213,46 +242,17 @@ class ScriptCompressor {
 				$content = preg_replace($regex_css, '', $content);
 
 				if (strlen($cssfiles) > 0) {
-					$output_aft .= '<link rel="stylesheet" href="' . $cssfiles . '" type="text/css" media="all" />' . "\n";
+					$output_css .= '<link rel="stylesheet" href="' . $cssfiles . '" type="text/css" media="all" />' . "\n";
 				}
 			}
 		}
 
 		if ($this->options['output_footer']) {
 			$this->output .= $output_aft;
-			return $output_bef . $content;
+			return $output_bef . $content . $output_css;
 		} else {
-			return $output_bef . $content . $output_aft;
+			return $output_bef . $content . $output_css . $output_aft;
 		}
-	}
-
-	/**
-	 * Build URL for js compression.
-	 *
-	 * @param array $urls matches.
-	 * @return array URL.
-	 * @see ScriptCompressor::compress()
-	 */
-	function buildJsURL($urls) {
-		$regex = '/';
-		foreach ($this->options['jspos'] as $js) {
-			$regex .= '(' . preg_quote($js) . ')|';
-		}
-		$regex = substr($regex, 0, -1) . '/i';
-
-		$url = $this->plugin_path . '/jscsscomp.php?q=';
-		$before = $after = $url;
-		foreach ($urls as $path) {
-			if (preg_match($regex, $path)) {
-				$before .= $path . ',';
-			} else {
-				$after .= $path . ',';
-			}
-		}
-		$before = ($before == $url) ? '' : substr($before, 0, -1);
-		$after = ($after == $url) ? '' : substr($after, 0, -1);
-
-		return array($before, $after);
 	}
 
 	/**
@@ -372,8 +372,8 @@ class ScriptCompressor {
 							$this->options['sc_comp'][$set] = true;
 						}
 					}
-					$this->options['jspos'] = explode("\n", str_replace(array("\r\n", "\n\n"), array("\n", ''), $_POST['jspos']));
-					$this->options['exclude_js'] = explode("\n", str_replace(array("\r\n", "\n\n"), array("\n", ''), $_POST['exclude_js']));
+					$this->options['jspos'] = empty($_POST['jspos']) ? array() : explode("\n", str_replace(array("\r\n", "\n\n"), array("\n", ''), $_POST['jspos']));
+					$this->options['exclude_js'] = empty($_POST['exclude_js']) ? array() : explode("\n", str_replace(array("\r\n", "\n\n"), array("\n", ''), $_POST['exclude_js']));
 					$this->options['output_footer'] = isset($_POST['output_footer']);
 					$this->options['css_method'] = $_POST['css_method'];
 					$this->options['rewritecond'] = str_replace("\r\n", "\n", $_POST['rewritecond']);
