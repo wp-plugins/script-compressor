@@ -504,7 +504,7 @@ class ScriptCompressor {
 	</p>
 	<p>
 		<label><input type="radio" name="css_method" value="composed" <?php echo $value['css_method']['composed'] ?>/> <?php _e('Composed', $this->domain) ?></label><br />
-		<?php _e('This method compresses <strong>composed</strong> CSS files in wp_head(). The frequency of the HTTP request is less than "Respective" but there is a possibility that paths of images in CSS files break and that the media type becomes ineffective.', $this->domain) ?>
+		<?php _e('This method compresses <strong>composed</strong> CSS files in the header. The frequency of the HTTP request is less than "Respective" but there is a possibility that the paths of images in CSS files break and that the media type becomes ineffective.', $this->domain) ?>
 	</p>
 </td>
 </tr>
@@ -527,7 +527,7 @@ class ScriptCompressor {
 <h3><?php _e('Additional template tags', $this->domain) ?></h3>
 <p><?php _e('Javascripts and CSS between <code>&lt;?php sc_comp_start() ?&gt;</code> and <code>&lt;?php sc_comp_end() ?&gt;</code> will be compressed by this plugin.', $this->domain) ?></p>
 <p><?php _e('e.g.', $this->domain) ?><br /><code style="display: block; padding: 6px; background-color: #eeeeee; border: #dfdfdf solid 1px;"><?php _e('&lt;?php sc_comp_start() ?&gt;<br />&lt;script type="text/javascript" src="foo.js"&gt;&lt;/script&gt;<br />&lt;script type="text/javascript" src="bar.js"&gt;&lt;/script&gt;<br />&lt;?php sc_comp_end() ?&gt;', $this->domain) ?></code></p>
-<p><?php _e('If you check "Javascript compression in the header", the contents of the header will be compressed automatically.', $this->domain) ?></p>
+<p><?php _e('If you check "Javascript compression in the header", the scripts in the header will be compressed automatically.', $this->domain) ?></p>
 <h2><?php _e('Notes', $this->domain) ?></h2>
 <ul>
 <li><?php _e('This plugin makes caches in the compression progress.', $this->domain) ?></li>
