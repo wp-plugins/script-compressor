@@ -239,11 +239,17 @@ class ScriptCompressor {
 			}
 		}
 
+		if (preg_match('%<meta name="generator" content="WordPress.*" />%', $content, $matches)) {
+			$content = str_replace($matches[0], $matches[0] . $output_bef, $content);
+		} else {
+			$content = $output_bef . $content;
+		}
+
 		if ($this->options['output_footer']) {
 			$this->output .= $output_aft;
-			return $output_bef . $content . $output_css;
+			return $content . $output_css;
 		} else {
-			return $output_bef . $content . $output_css . $output_aft;
+			return $content . $output_css . $output_aft;
 		}
 	}
 
