@@ -10,7 +10,7 @@ Author URI: http://rp.exadge.com
 
 /**
  * @author Regen
- * @copyright Copyright (C) 2008 Regen
+ * @copyright Copyright (C) 2009 Regen
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @link http://rp.exadge.com/2008/04/30/script-compressor/ Script Compressor
  * @access public
@@ -191,17 +191,8 @@ class ScriptCompressor {
 		$regex_js = '%<script\s.*src=(?:"|\')(?:(?!http)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST'], '%') . '))/?(.+?\.js(?:\?.*)?)(?:"|\').*>\s*</script>(?:\r?\n)*%m';
 		$regex_css = '%<link\s.*href=(?:"|\')(?:(?!http)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST'], '%') . '))/?(.+?\.css(?:\?.*)?)(?:"|\').*/?>(?:\r?\n)*%m';
 
-		$regex_before = '/';
-		foreach ($this->options['jspos'] as $js) {
-			$regex_before .= '(' . preg_quote($js) . ')|';
-		}
-		$regex_before = substr($regex_before, 0, -1) . '/i';
-
-		$regex_exlude = '/';
-		foreach ($this->options['exclude_js'] as $js) {
-			$regex_exlude .= '(' . preg_quote($js) . ')|';
-		}
-		$regex_exlude = substr($regex_exlude, 0, -1) . '/i';
+		$regex_before = $this->buildRegexFromArray($this->options['jspos']);
+		$regex_exlude = $this->buildRegexFromArray($this->options['exclude_js']);
 
 		$output_bef = '';
 		$output_aft = '';
@@ -253,6 +244,27 @@ class ScriptCompressor {
 		} else {
 			return $output_bef . $content . $output_css . $output_aft;
 		}
+	}
+
+	/**
+	 * Build Regex from array.
+	 *
+	 * @param array $targets
+	 * @return string
+	 */
+	function buildRegexFromArray($targets) {
+		$regex = '/';
+		foreach ($targets as $target) {
+			if (!empty($target)) {
+				$regex .= '(' . preg_quote($target) . ')|';
+			}
+		}
+		if ($regex == '/') {
+			$regex = '/(?!)/';
+		} else {
+			$regex = substr($regex, 0, -1) . '/i';
+		}
+		return $regex;
 	}
 
 	/**
@@ -491,7 +503,7 @@ class ScriptCompressor {
 	</p>
 	<p>
 		<label><input type="radio" name="css_method" value="composed" <?php echo $value['css_method']['composed'] ?>/> <?php _e('Composed', $this->domain) ?></label><br />
-		<?php _e('This method compresses <strong>composed</strong> CSS files in wp_head(). The frequency of the HTTP request is less than "Respective" but there is a possibility that paths of images in CSS files break and that The media type becomes ineffective.', $this->domain) ?>
+		<?php _e('This method compresses <strong>composed</strong> CSS files in wp_head(). The frequency of the HTTP request is less than "Respective" but there is a possibility that paths of images in CSS files break and that the media type becomes ineffective.', $this->domain) ?>
 	</p>
 </td>
 </tr>
