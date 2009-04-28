@@ -56,6 +56,7 @@ class ScriptCompressor {
 	function ScriptCompressor() {
 		$this->domain = 'script-compressor';
 		$this->plugin_name = 'script-compressor';
+		$this->option_page = 'sc_option_page';
 		$this->output = '';
 		if (defined('WP_PLUGIN_URL')) {
 			$this->plugin_path = WP_PLUGIN_URL . '/' . $this->plugin_name;
@@ -345,7 +346,7 @@ class ScriptCompressor {
 	 *
 	 */
 	function regist_menu() {
-		add_options_page(__('Script Compressor Options', $this->domain), __('Script Compressor', $this->domain), 8, 'sc_option_page', array(&$this, 'sc_options_page'));
+		add_options_page(__('Script Compressor Options', $this->domain), __('Script Compressor', $this->domain), 8, $this->option_page, array(&$this, 'sc_options_page'));
 		add_filter('plugin_action_links', array(&$this, 'add_action_links'), 10, 2);
 	}
 
@@ -357,7 +358,7 @@ class ScriptCompressor {
 	 */
 	function add_action_links($links, $file){
 		if ($file == $this->plugin_name . '/' . basename(__FILE__)) {
-			$settings_link = '<a href="options-general.php?page=sc_option_page">' . __('Settings', $this->domain) . '</a>';
+			$settings_link = '<a href="options-general.php?page=' . $this->option_page . '">' . __('Settings', $this->domain) . '</a>';
 			$links = array_merge(array($settings_link), $links);
 		}
 		return $links;
@@ -441,7 +442,7 @@ class ScriptCompressor {
 
 <div class="wrap">
 <h2><?php _e('Script Compressor Options', $this->domain) ?></h2>
-<form action="?page=sc_option_page" method="post" id="sc_option">
+<form action="?page=<?php echo $this->option_page ?>" method="post" id="sc_option">
 <h3><?php _e('General Options', $this->domain) ?></h3>
 <table class="form-table">
 <tbody>
@@ -536,7 +537,7 @@ class ScriptCompressor {
 <br />
 <h2><?php _e('Remove options', $this->domain) ?></h2>
 <p><?php _e('You can remove the above options from the database.', $this->domain) ?></p>
-<form action="?page=sc_option_page" method="post" id="sc_remove_option">
+<form action="?page=<?php echo $this->option_page ?>" method="post" id="sc_remove_option">
 <p>
 <input type="hidden" name="action" value="remove" />
 <input id="sc_remove_bt" type="submit" class="button" value="<?php _e('Remove options', $this->domain) ?>" name="submit" />
