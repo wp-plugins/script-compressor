@@ -310,15 +310,15 @@ class ScriptCompressor {
 	}
 
 	/**
-	 * Regist WP_head hooks.
+	 * Regist auto header compression hooks.
 	 *
 	 */
 	function regist_header_comp() {
 		global $wp_filter;
 
-		$max_priority = max(array_keys($wp_filter['wp_head'])) + 1;
+		$this->comp_start();
 
-		add_action('wp_head', array(&$this, 'comp_start'), 0);
+		$max_priority = max(array_keys($wp_filter['wp_head'])) + 1;
 		add_action('wp_head', array(&$this, 'comp_end'), $max_priority);
 	}
 
@@ -449,7 +449,7 @@ class ScriptCompressor {
 <th scope="row"><?php _e('Auto-compression', $this->domain) ?></th>
 <td>
 	<p>
-		<label><input type="checkbox" name="sc_comp[]" value="auto_js_comp" <?php echo $value['auto_js_comp'] ?>/> <?php _e('Javascript compression for wp_head()', $this->domain) ?></label>
+		<label><input type="checkbox" name="sc_comp[]" value="auto_js_comp" <?php echo $value['auto_js_comp'] ?>/> <?php _e('Javascript compression in the header', $this->domain) ?></label>
 	</p>
 	<p>
 		<label><input type="checkbox" name="sc_comp[]" value="css_comp" <?php echo $value['css_comp'] ?>/> <?php _e('CSS compression', $this->domain) ?></label>
@@ -526,7 +526,7 @@ class ScriptCompressor {
 <h3><?php _e('Additional template tags', $this->domain) ?></h3>
 <p><?php _e('Javascripts and CSS between <code>&lt;?php sc_comp_start() ?&gt;</code> and <code>&lt;?php sc_comp_end() ?&gt;</code> will be compressed by this plugin.', $this->domain) ?></p>
 <p><?php _e('e.g.', $this->domain) ?><br /><code style="display: block; padding: 6px; background-color: #eeeeee; border: #dfdfdf solid 1px;"><?php _e('&lt;?php sc_comp_start() ?&gt;<br />&lt;script type="text/javascript" src="foo.js"&gt;&lt;/script&gt;<br />&lt;script type="text/javascript" src="bar.js"&gt;&lt;/script&gt;<br />&lt;?php sc_comp_end() ?&gt;', $this->domain) ?></code></p>
-<p><?php _e('If you check "Javascript compression for headers", the contents of wp_head() will be compressed automatically.', $this->domain) ?></p>
+<p><?php _e('If you check "Javascript compression in the header", the contents of the header will be compressed automatically.', $this->domain) ?></p>
 <h2><?php _e('Notes', $this->domain) ?></h2>
 <ul>
 <li><?php _e('This plugin makes caches in the compression progress.', $this->domain) ?></li>
