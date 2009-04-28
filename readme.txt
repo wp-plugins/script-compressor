@@ -2,7 +2,7 @@
 Contributors: Regen
 Tags: compress, javascript, css
 Requires at least: 2.5
-Tested up to: 2.7
+Tested up to: 2.7.1
 Stable tag: 1.6
 
 This plugin compresses javascript files and css files.
@@ -15,7 +15,7 @@ The compressor is based on [jscsscomp](http://code.google.com/p/jscsscomp/).
 
 = Features =
 
-*   Auto-compression for wp_head()
+*   Auto-compression for the blog header
 *   Template tags which provide javascript compression
 *   You can turn on/off compressions in the admin page
 *   Editable CSS compression condition
