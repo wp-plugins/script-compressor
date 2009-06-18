@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Script Compressor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-28 09:10-0000\n"
+"POT-Creation-Date: 2009-06-18 09:13-0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -12,179 +12,182 @@ msgstr ""
 "X-Poedit-Language: \n"
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-Basepath: .\n"
-"X-Poedit-SearchPath-0: \n"
 
-#: C:\repository\script-compressor/script-compressor.php:349
-#: C:\repository\script-compressor/script-compressor.php:444
+#: C:\repository\script-compressor/script-compressor.php:355
+#: C:\repository\script-compressor/script-compressor.php:450
 msgid "Script Compressor Options"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:349
+#: C:\repository\script-compressor/script-compressor.php:355
 msgid "Script Compressor"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:361
+#: C:\repository\script-compressor/script-compressor.php:367
 msgid "Settings"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:376
+#: C:\repository\script-compressor/script-compressor.php:382
 #, php-format
 msgid "Give the write permission to %s."
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:401
-#: C:\repository\script-compressor/script-compressor.php:403
+#: C:\repository\script-compressor/script-compressor.php:407
+#: C:\repository\script-compressor/script-compressor.php:409
 msgid "Options saved."
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:403
-#: C:\repository\script-compressor/script-compressor.php:414
+#: C:\repository\script-compressor/script-compressor.php:409
+#: C:\repository\script-compressor/script-compressor.php:420
 msgid "Your .htaccess is not writable so you may need to re-save your <a href=\"options-permalink.php\">permalink settings</a> manually."
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:412
-#: C:\repository\script-compressor/script-compressor.php:414
+#: C:\repository\script-compressor/script-compressor.php:418
+#: C:\repository\script-compressor/script-compressor.php:420
 msgid "Options removed."
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:446
+#: C:\repository\script-compressor/script-compressor.php:452
 msgid "General Options"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:450
+#: C:\repository\script-compressor/script-compressor.php:456
 msgid "Auto-compression"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:453
+#: C:\repository\script-compressor/script-compressor.php:459
 msgid "Javascript compression in the header"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:456
+#: C:\repository\script-compressor/script-compressor.php:462
 msgid "CSS compression"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:461
+#: C:\repository\script-compressor/script-compressor.php:467
 msgid "Gzip compression"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:464
+#: C:\repository\script-compressor/script-compressor.php:470
 msgid "Use gzip compression for the cache and the output."
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:469
+#: C:\repository\script-compressor/script-compressor.php:475
 msgid "Javascript Options"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:473
+#: C:\repository\script-compressor/script-compressor.php:479
 msgid "Position of Javascripts"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:476
+#: C:\repository\script-compressor/script-compressor.php:482
 msgid "This plugin will output compressed Javascripts after the header. However some scripts need to be loaded before other scripts. So you can input a part of script URL that need to be loaded first (one per line)."
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:480
+#: C:\repository\script-compressor/script-compressor.php:486
 msgid "Exclude Javascripts"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:483
+#: C:\repository\script-compressor/script-compressor.php:489
 msgid "You can input a part of script URL that need not to be compressed (one per line)."
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:487
+#: C:\repository\script-compressor/script-compressor.php:493
 msgid "Output Position"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:490
+#: C:\repository\script-compressor/script-compressor.php:496
 msgid "Output compressed scripts to the footer."
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:495
+#: C:\repository\script-compressor/script-compressor.php:501
 msgid "CSS Options"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:499
+#: C:\repository\script-compressor/script-compressor.php:505
 msgid "CSS compression method"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:502
+#: C:\repository\script-compressor/script-compressor.php:508
 msgid "Respective"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:503
+#: C:\repository\script-compressor/script-compressor.php:509
 msgid "This method compresses <strong>respective</strong> CSS files (former method). This uses .htaccess and mod_rewrite."
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:506
+#: C:\repository\script-compressor/script-compressor.php:512
 msgid "Composed"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:507
+#: C:\repository\script-compressor/script-compressor.php:513
 msgid "This method compresses <strong>composed</strong> CSS files in the header. The frequency of the HTTP request is less than \"Respective\" but there is a possibility that the paths of images in CSS files break and that the media type becomes ineffective."
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:512
+#: C:\repository\script-compressor/script-compressor.php:518
 msgid "CSS compression condition (mod_rewrite)"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:515
+#: C:\repository\script-compressor/script-compressor.php:521
 msgid "This text is inserted in the upper part of RewriteRule added by this plugin in your .htaccess. Please see <a href=\"http://httpd.apache.org/docs/2.0/mod/mod_rewrite.html#rewritecond\">RewriteCond doc</a>."
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:516
+#: C:\repository\script-compressor/script-compressor.php:522
 msgid "Example: <code>RewriteCond %{REQUEST_URI} !.*wp-admin.*</code>"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:522
+#: C:\repository\script-compressor/script-compressor.php:528
 msgid "Update Options"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:526
+#: C:\repository\script-compressor/script-compressor.php:532
 msgid "Instructions"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:527
+#: C:\repository\script-compressor/script-compressor.php:533
 msgid "Additional template tags"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:528
+#: C:\repository\script-compressor/script-compressor.php:534
 msgid "Javascripts and CSS between <code>&lt;?php sc_comp_start() ?&gt;</code> and <code>&lt;?php sc_comp_end() ?&gt;</code> will be compressed by this plugin."
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:529
+#: C:\repository\script-compressor/script-compressor.php:535
 msgid "e.g."
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:529
+#: C:\repository\script-compressor/script-compressor.php:535
 msgid "&lt;?php sc_comp_start() ?&gt;<br />&lt;script type=\"text/javascript\" src=\"foo.js\"&gt;&lt;/script&gt;<br />&lt;script type=\"text/javascript\" src=\"bar.js\"&gt;&lt;/script&gt;<br />&lt;?php sc_comp_end() ?&gt;"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:530
+#: C:\repository\script-compressor/script-compressor.php:536
 msgid "If you check \"Javascript compression in the header\", the scripts in the header will be compressed automatically."
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:531
+#: C:\repository\script-compressor/script-compressor.php:537
 msgid "Notes"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:533
+#: C:\repository\script-compressor/script-compressor.php:539
 msgid "This plugin makes caches in the compression progress."
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:534
+#: C:\repository\script-compressor/script-compressor.php:540
 msgid "Only files located in the same server as your WordPress can be compressed."
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:535
+#: C:\repository\script-compressor/script-compressor.php:541
 msgid "The extensions of Javascript and CSS should be .js and .css respectively."
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:538
-#: C:\repository\script-compressor/script-compressor.php:543
+#: C:\repository\script-compressor/script-compressor.php:542
+msgid "<strong>When you deactivate this plugin, the mod_rewrite codes in the .htaccess can remain and cause problems, so you may need to re-save your <a href=\"options-permalink.php\">permalink settings</a> after the deactivation.</strong>"
+msgstr ""
+
+#: C:\repository\script-compressor/script-compressor.php:545
+#: C:\repository\script-compressor/script-compressor.php:550
 msgid "Remove options"
 msgstr ""
 
-#: C:\repository\script-compressor/script-compressor.php:539
+#: C:\repository\script-compressor/script-compressor.php:546
 msgid "You can remove the above options from the database."
 msgstr ""
 

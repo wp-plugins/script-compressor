@@ -539,6 +539,7 @@ class ScriptCompressor {
 <li><?php _e('This plugin makes caches in the compression progress.', $this->domain) ?></li>
 <li><?php _e('Only files located in the same server as your WordPress can be compressed.', $this->domain) ?></li>
 <li><?php _e('The extensions of Javascript and CSS should be .js and .css respectively.', $this->domain) ?></li>
+<li><?php _e('<strong>When you deactivate this plugin, the mod_rewrite codes in the .htaccess can remain and cause problems, so you may need to re-save your <a href="options-permalink.php">permalink settings</a> after the deactivation.</strong>', $this->domain) ?></li>
 </ul>
 <br />
 <h2><?php _e('Remove options', $this->domain) ?></h2>

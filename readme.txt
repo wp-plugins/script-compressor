@@ -30,9 +30,15 @@ The compressor is based on [jscsscomp](http://code.google.com/p/jscsscomp/).
 
 == Frequently Asked Questions ==
 
-= CSS does not work =
-
+= CSS does not work! =
 After opening CSS directly by your browser, do super-reloading (Ctrl+F5).
+
+= After the deactivation of this plugin, the blog style is broken! =
+The mod_rewrite codes may remain in your .htaccess.
+Please delete these lines in your .htaccess:
+
+	RewriteEngine on
+	RewriteRule ^(.*)\.css$ /path-to-wp/wp-content/plugins/script-compressor/jscsscomp.php?q=$1.css [NC,T=text/css,L]
 
 == Screenshots ==
 

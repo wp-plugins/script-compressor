@@ -30,9 +30,15 @@ Stable tag: 1.6.2
 
 == FAQ ==
 
-= CSSが適応されなくなった =
-
+= CSSが適応されなくなった! =
 キャッシュが働いていますので、CSSを直接開いてからスーパーリロード(Ctrl+F5)してください。
+
+= プラグインを無効化した後ブログのスタイルが壊れた! =
+mod_rewriteコードが.htaccessの中に残っている場合があります。
+次の行を削除してください:
+
+	RewriteEngine on
+	RewriteRule ^(.*)\.css$ /path-to-wp/wp-content/plugins/script-compressor/jscsscomp.php?q=$1.css [NC,T=text/css,L]
 
 == スクリーンショット ==
 
