@@ -391,6 +391,7 @@ class ScriptCompressor {
 					break;
 				case 'remove':
 					$this->delete_option();
+					$this->get_option();
 					$this->set_hooks();
 
 					$wp_rewrite->flush_rules();
