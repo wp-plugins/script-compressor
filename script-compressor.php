@@ -400,6 +400,12 @@ class ScriptCompressor {
 						echo '<div class="updated"><p><strong>' . __('Options removed.', $this->domain) . ' ' . __('Your .htaccess is not writable so you may need to re-save your <a href="options-permalink.php">permalink settings</a> manually.', $this->domain) . '</strong></p></div>';
 					}
 					break;
+				case 'remove_cache':
+					foreach (glob($cache_dir . '/*-*') as $file) {
+						unlink($file);
+					}
+					echo '<div class="updated"><p><strong>' . __('Cache removed.', $this->domain) . '</strong></p></div>';
+					break;
 			}
 		}
 
@@ -522,12 +528,21 @@ class ScriptCompressor {
 <li><?php _e('<strong>When you deactivate this plugin, the mod_rewrite codes in the .htaccess can remain and cause problems, so you may need to re-save your <a href="options-permalink.php">permalink settings</a> after the deactivation.</strong>', $this->domain) ?></li>
 </ul>
 <br />
+<h2><?php _e('Remove cache files', $this->domain) ?></h2>
+<p><?php _e('You can remove the cache files.', $this->domain) ?></p>
+<form action="?page=<?php echo $this->option_page ?>" method="post">
+<p>
+<input type="hidden" name="action" value="remove_cache" />
+<input type="submit" class="button" value="<?php _e('Remove cache files', $this->domain) ?>" name="submit" />
+</p>
+</form>
+<br />
 <h2><?php _e('Remove options', $this->domain) ?></h2>
 <p><?php _e('You can remove the above options from the database.', $this->domain) ?></p>
-<form action="?page=<?php echo $this->option_page ?>" method="post" id="sc_remove_option">
+<form action="?page=<?php echo $this->option_page ?>" method="post">
 <p>
 <input type="hidden" name="action" value="remove" />
-<input id="sc_remove_bt" type="submit" class="button" value="<?php _e('Remove options', $this->domain) ?>" name="submit" />
+<input type="submit" class="button" value="<?php _e('Remove options', $this->domain) ?>" name="submit" />
 </p>
 </form>
 </div>
