@@ -189,8 +189,8 @@ class ScriptCompressor {
 	 * @return string Compressed content.
 	 */
 	function compress($content) {
-		$regex_js = '%<script\s.*src=(?:"|\')(?:(?!http)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST'], '%') . '))/?(.+?\.js(?:\?.*)?)(?:"|\').*>\s*</script>(?:\r?\n)*%m';
-		$regex_css = '%<link\s.*href=(?:"|\')(?:(?!http)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST'], '%') . '))/?(.+?\.css(?:\?.*)?)(?:"|\').*/?>(?:\r?\n)*%m';
+		$regex_js = '%<script.+src=["\'](?:(?!https?://)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST'], '%') . '))/?(.+\.js(?:\?.*)?)["\'].*>\s*</script>(?:\r?\n)*%m';
+		$regex_css = '%<link.+href=["\'](?:(?!https?://)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST'], '%') . '))/?(.+\.css(?:\?.*)?)["\'].*/?>(?:\r?\n)*%m';
 
 		$regex_before = $this->buildRegexFromArray($this->options['jspos']);
 		$regex_exlude = $this->buildRegexFromArray($this->options['exclude_js']);
@@ -199,43 +199,40 @@ class ScriptCompressor {
 		$output_aft = '';
 		$output_css = '';
 
+		$url = $this->plugin_path . '/jscsscomp.php?q=';
+
 		if (preg_match_all($regex_js, $content, $matches, PREG_SET_ORDER)) {
 			$regex_remove = array();
-			$url = $this->plugin_path . '/jscsscomp.php?q=';
-			$befjs = $aftjs = $url;
+			$befjs = $aftjs = array();
 			foreach ($matches as $match) {
 				$full = $match[0];
 				$path = $match[1];
 				if (!preg_match($regex_exlude, $path)) {
 					if (preg_match($regex_before, $path)) {
-						$befjs .= $path . ',';
+						$befjs[] = $path;
 					} else {
-						$aftjs .= $path . ',';
+						$aftjs[] = $path;
 					}
 					$regex_remove[] = $full;
 				}
 			}
-			$befjs = ($befjs == $url) ? '' : substr($befjs, 0, -1);
-			$aftjs = ($aftjs == $url) ? '' : substr($aftjs, 0, -1);
 
 			$content = str_replace($regex_remove, '', $content);
 
-			if (strlen($befjs) > 0) {
-				$output_bef .= '<script type="text/javascript" src="' . $befjs . '"></script>' . "\n";
+			if (count($befjs) > 0) {
+				$output_bef .= '<script type="text/javascript" src="' . $url . implode(',', $befjs) . '"></script>' . "\n";
 			}
-			if (strlen($aftjs) > 0) {
-				$output_aft .= '<script type="text/javascript" src="' . $aftjs . '"></script>' . "\n";
+			if (count($aftjs) > 0) {
+				$output_aft .= '<script type="text/javascript" src="' . $url . implode(',', $aftjs) . '"></script>' . "\n";
 			}
 		}
 		if ($this->options['sc_comp']['css_comp'] && $this->options['css_method'] == 'composed') {
 			if (preg_match_all($regex_css, $content, $matches)) {
-				$cssfiles = $this->buildCSSURL($matches[1]);
+				$cssfiles = $url . implode(',', $matches[1]);
 
 				$content = preg_replace($regex_css, '', $content);
 
-				if (strlen($cssfiles) > 0) {
-					$output_css .= '<link rel="stylesheet" href="' . $cssfiles . '" type="text/css" media="all" />' . "\n";
-				}
+				$output_css .= '<link rel="stylesheet" href="' . $cssfiles . '" type="text/css" media="all" />' . "\n";
 			}
 		}
 
@@ -260,36 +257,19 @@ class ScriptCompressor {
 	 * @return string
 	 */
 	function buildRegexFromArray($targets) {
-		$regex = '/';
+		if (count($targets) == 0) {
+			return '/(?!)/';
+		}
+		
+		$regex = array();
 		foreach ($targets as $target) {
-			if (!empty($target)) {
-				$regex .= '(' . preg_quote($target) . ')|';
+			if ($target !== '') {
+				$regex[] = preg_quote($target, '/');
 			}
 		}
-		if ($regex == '/') {
-			$regex = '/(?!)/';
-		} else {
-			$regex = substr($regex, 0, -1) . '/i';
-		}
+		
+		$regex = '/' . implode('|', $regex) . '/i';
 		return $regex;
-	}
-
-	/**
-	 * Build URL for css compression.
-	 *
-	 * @param array $urls matches.
-	 * @return string URL.
-	 * @see ScriptCompressor::compress()
-	 */
-	function buildCSSURL($urls) {
-		$url = $this->plugin_path . '/jscsscomp.php?q=';
-
-		foreach ($urls as $path) {
-			$url .= $path . ',';
-		}
-		$url = substr($url, 0, -1);
-
-		return $url;
 	}
 
 	/**
@@ -336,13 +316,13 @@ class ScriptCompressor {
 	 * @return string Rewrite data with rules of this pluguin.
 	 */
 	function rewrite_sc($rewrite) {
-		$plugin_path_rewrite = preg_replace('%https?://' . preg_quote($_SERVER['HTTP_HOST']) . '%', '', get_option('siteurl')) . '/wp-content/plugins/' . $this->plugin_name;
+		$plugin_path_rewrite = preg_replace('%https?://' . preg_quote($_SERVER['HTTP_HOST'], '%') . '%', '', get_option('siteurl')) . '/wp-content/plugins/' . $this->plugin_name;
 		$url = $plugin_path_rewrite . '/jscsscomp.php';
 		$rule = '';
 
 		$rule .= 'RewriteEngine on' . "\n";
 		if (!empty($this->options['rewritecond'])) $rule .= $this->options['rewritecond'] . "\n";
-		$rule .= 'RewriteRule ^(.*)\.css$ ' . $url . '?q=$1.css [NC,T=text/css,L]' . "\n";
+		$rule .= 'RewriteRule ^(.*)\.css$ ' . $url . '?q=$1.css [NC,L]' . "\n";
 
 		return $rule . $rewrite;
 	}
