@@ -12,7 +12,8 @@ $comp = new Compressor(array(
 	'charset' => get_option('blog_charset'),
 	'gzip' => $scriptcomp->options['gzip'],
 	'replacePath' => $scriptcomp->options['css_method'] == 'composed',
-	'cache' => $scriptcomp->options['cache']
+	'cache' => $scriptcomp->options['cache'],
+	'importCallback' => array($scriptcomp, 'buildUrl')
 ));
 $comp->sendHeader();
 echo $comp->getContent();

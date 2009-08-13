@@ -75,6 +75,8 @@ class Compressor {
 	 *      Whether replace paths.
 	 *  - cache
 	 *      Cache directory.
+	 *  - importCallback
+	 *      Callback to change import url in CSS.
 	 * @return Compressor
 	 */
 	function Compressor($options) {
@@ -82,10 +84,12 @@ class Compressor {
 			'charset' => 'utf-8',
 			'gzip' => false,
 			'replacePath' => false,
-			'cache' => 'cache'
+			'cache' => 'cache',
+			'importCallback' => false
 		);
-		
+
 		$this->options['files'] = (array)$this->options['files'];
+
 		$this->headers = array();
 
 		$js_files = $css_files = 0;
@@ -179,19 +183,24 @@ class Compressor {
 		$content = '';
 		foreach($this->options['files'] as $file){
 			$file_content = file_get_contents($file) . "\n\n";
-			if ($this->type === 'css' && $this->options['replacePath']) {
-				if (preg_match_all('%url\((?:"|\')?(.+?)(?:"|\')?\)%i', $file_content, $matches, PREG_SET_ORDER)) {
+			if ($this->type === 'css') {
+				if (preg_match_all('%url\(["\']?(.+?)["\']?\)|@import\s+(?:url\()?["\']?([^"\')]+)["\']?\)?%i', $file_content, $matches, PREG_SET_ORDER)) {
 					$from = $to = array();
-
 					foreach ($matches as $val) {
-						if (!preg_match('%(http://|data:)%', $val[1], $protocol)) {
-							$from[] = $val[0];
-							$to[] =
-								'url("' .
-								(isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] .
-								str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname($file)) . '/' .
-								preg_replace('%^\.?/%', '', $val[1]) .
-								'")';
+						if (isset($val[2])) {
+							if (!preg_match('%(http://|data:)%', $val[2])) {
+								$from[] = $val[0];
+								$url = $this->getAbsUrl($file, $val[2]);
+								if (is_callable($this->options['importCallback'])) {
+									$url = call_user_func($this->options['importCallback'], $url);
+								}
+								$to[] = str_replace($val[2], $url, $val[0]);
+							}
+						} elseif ($this->options['replacePath']) {
+							if (!preg_match('%(http://|data:)%', $val[1])) {
+								$from[] = $val[0];
+								$to[] = 'url("' . $this->getAbsUrl($file, $val[1]) . '")';
+							}
 						}
 					}
 					$file_content = str_replace($from, $to, $file_content);
@@ -201,6 +210,16 @@ class Compressor {
 		}
 
 		return $content;
+	}
+
+	/**
+	 * Get absolute URL.
+	 *
+	 * @param string $base Base file path.
+	 * @param string $url File path.
+	 */
+	function getAbsUrl($base, $url) {
+		return '/' . ltrim(str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname($base)), '\\/') . '/' . preg_replace('%^\.?[/\\\\]%', '', $url);
 	}
 
 	/**

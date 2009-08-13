@@ -199,8 +199,6 @@ class ScriptCompressor {
 		$output_aft = '';
 		$output_css = '';
 
-		$url = $this->plugin_path . '/jscsscomp.php?q=';
-
 		if (preg_match_all($regex_js, $content, $matches, PREG_SET_ORDER)) {
 			$regex_remove = array();
 			$befjs = $aftjs = array();
@@ -220,15 +218,15 @@ class ScriptCompressor {
 			$content = str_replace($regex_remove, '', $content);
 
 			if (count($befjs) > 0) {
-				$output_bef .= '<script type="text/javascript" src="' . $url . implode(',', $befjs) . '"></script>' . "\n";
+				$output_bef .= '<script type="text/javascript" src="' . $this->buildUrl($befjs) . '"></script>' . "\n";
 			}
 			if (count($aftjs) > 0) {
-				$output_aft .= '<script type="text/javascript" src="' . $url . implode(',', $aftjs) . '"></script>' . "\n";
+				$output_aft .= '<script type="text/javascript" src="' . $this->buildUrl($aftjs) . '"></script>' . "\n";
 			}
 		}
 		if ($this->options['sc_comp']['css_comp'] && $this->options['css_method'] == 'composed') {
 			if (preg_match_all($regex_css, $content, $matches)) {
-				$cssfiles = $url . implode(',', $matches[1]);
+				$cssfiles = $this->buildUrl($matches[1]);
 
 				$content = preg_replace($regex_css, '', $content);
 
@@ -273,6 +271,16 @@ class ScriptCompressor {
 	}
 
 	/**
+	 * Build URL to commpressed files.
+	 *
+	 * @param array|string $files
+	 * @return string
+	 */
+	function buildUrl($files) {
+		return $this->plugin_path . '/jscsscomp.php?q=' . implode(',', (array)$files);
+	}
+
+	/**
 	 * Output scripts to footer.
 	 */
 	function output_footer() {
@@ -288,8 +296,7 @@ class ScriptCompressor {
 		$files = explode(',', preg_replace('%.+/jscsscomp\.php\?q=%', '', $_SERVER['REQUEST_URI']));
 
 		foreach ($files as $id => $file) {
-			$file = str_replace('../', '', $file);
-			$file = rtrim($_SERVER['DOCUMENT_ROOT'], '\\/') . '/' . $file;
+			$file = rtrim($_SERVER['DOCUMENT_ROOT'], '\\/') . '/' . str_replace('..', '', $file);
 			$files[$id] = $file;
 		}
 
