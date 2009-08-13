@@ -7,12 +7,12 @@ if (file_exists('../../../wp-load.php')){
 
 require_once 'comp.class.php';
 
-$comp = new Compressor(
-	$scriptcomp->getScripts(),
-	get_option('blog_charset'),
-	$scriptcomp->options['gzip'],
-	$scriptcomp->options['css_method'] == 'composed',
-	$scriptcomp->options['cache']
-);
+$comp = new Compressor(array(
+	'files' => $scriptcomp->getScripts(),
+	'charset' => get_option('blog_charset'),
+	'gzip' => $scriptcomp->options['gzip'],
+	'replacePath' => $scriptcomp->options['css_method'] == 'composed',
+	'cache' => $scriptcomp->options['cache']
+));
 $comp->sendHeader();
 echo $comp->getContent();
