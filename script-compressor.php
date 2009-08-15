@@ -409,10 +409,13 @@ class ScriptCompressor {
 					}
 					break;
 				case 'remove_cache':
+					$count = 0;
 					foreach (glob($cache_dir . '/*-*') as $file) {
-						unlink($file);
+						if (unlink($file)) {
+							$count++;
+						}
 					}
-					echo '<div class="updated"><p><strong>' . __('Cache removed.', $this->domain) . '</strong></p></div>';
+					echo '<div class="updated"><p><strong>' . sprintf(__ngettext('%d file removed.', '%d files removed.', $count, $this->domain), $count) . '</strong></p></div>';
 					break;
 			}
 		}
