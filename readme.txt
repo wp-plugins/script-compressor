@@ -2,8 +2,8 @@
 Contributors: Regen
 Tags: compress, javascript, css
 Requires at least: 2.5
-Tested up to: 2.8
-Stable tag: 1.6.3
+Tested up to: 2.8.4
+Stable tag: 1.7
 
 This plugin compresses javascript files and css files.
 
@@ -47,6 +47,10 @@ Please delete these lines in your .htaccess:
 1. A part of the admin page.
 
 == Changelog ==
+
+= 1.7 =
+* Added @import compression.
+* Added a new function "Remove cache files".
 
 = 1.6.3 =
 * Added some document about the deactivation.
