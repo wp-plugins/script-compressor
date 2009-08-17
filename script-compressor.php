@@ -189,8 +189,8 @@ class ScriptCompressor {
 	 * @return string Compressed content.
 	 */
 	function compress($content) {
-		$regex_js = '%<script.+src=["\'](?:(?!https?://)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST'], '%') . '))/?(.+\.js(?:\?.*)?)["\'].*>\s*</script>(?:\r?\n)*%m';
-		$regex_css = '%<link.+href=["\'](?:(?!https?://)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST'], '%') . '))/?(.+\.css(?:\?.*)?)["\'].*/?>(?:\r?\n)*%m';
+		$regex_js = '%<script.+src=["\'](?:(?!https?://)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST'], '%') . '))/?(.+\.js(?:\?.*?)?)["\'].*>\s*</script>(?:\r?\n)*%m';
+		$regex_css = '%<link.+href=["\'](?:(?!https?://)|(?:https?://' . preg_quote($_SERVER['HTTP_HOST'], '%') . '))/?(.+\.css(?:\?.*?)?)["\'].*/?>(?:\r?\n)*%m';
 
 		$regex_before = $this->buildRegexFromArray($this->options['jspos']);
 		$regex_exlude = $this->buildRegexFromArray($this->options['exclude_js']);
