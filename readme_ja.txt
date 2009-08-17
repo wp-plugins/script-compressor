@@ -3,7 +3,7 @@ Contributors: Regen
 Tags: compress, javascript, css
 Requires at least: 2.5
 Tested up to: 2.8.4
-Stable tag: 1.7
+Stable tag: 1.7.1
 
 このプラグインはJavascript、CSSを圧縮するプラグインです。
 
@@ -47,6 +47,10 @@ mod_rewriteコードが.htaccessの中に残っている場合があります。
 1. 管理画面の一部
 
 == 変更履歴 ==
+
+= 1.7.1 =
+* IEの条件付きコメント関連のバグを修正
+* 正規表現のバグを修正
 
 = 1.7 =
 * @importのファイルを圧縮する機能を追加
