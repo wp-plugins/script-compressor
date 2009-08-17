@@ -199,6 +199,8 @@ class ScriptCompressor {
 		$output_aft = '';
 		$output_css = '';
 
+		$shelve = $this->shelve('%<!--\[if .*\]>.+<!\[endif\]-->%s', $content);
+
 		if (preg_match_all($regex_js, $content, $matches, PREG_SET_ORDER)) {
 			$regex_remove = array();
 			$befjs = $aftjs = array();
@@ -240,12 +242,43 @@ class ScriptCompressor {
 			$content = $output_bef . $content;
 		}
 
+		$this->unshelve($shelve, $content);
+
 		if ($this->options['output_footer']) {
 			$this->output .= $output_aft;
 			return $content . $output_css;
 		} else {
 			return $content . $output_css . $output_aft;
 		}
+	}
+
+	/**
+	 * Shelve strings which match pattern.
+	 *
+	 * @param string $pattern Preg pattern
+	 * @param string $str Target strings
+	 * @return array Shelved data
+	 */
+	function shelve($pattern, &$str) {
+		$data = array();
+		if (preg_match_all($pattern, $str, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				$key = sprintf('__SHELVE_%s_%s__', count($data), time());
+				$data[$key] = $match[0];
+				$str = str_replace($match[0], $key, $str);
+			}
+		}
+		return $data;
+	}
+
+	/**
+	 * Unshelve strings which shelved.
+	 *
+	 * @param string $data Shelved data
+	 * @param string $str Target strings
+	 */
+	function unshelve($data, &$str) {
+		$str = str_replace(array_keys($data), array_values($data), $str);
 	}
 
 	/**
